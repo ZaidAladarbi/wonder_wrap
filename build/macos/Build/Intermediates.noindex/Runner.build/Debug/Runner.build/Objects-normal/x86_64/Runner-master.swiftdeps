@@ -1,0 +1,8 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "22fe899621bab4b948542fb8e6040209baee48370da42178c9beb71f0d506ef0"
+build_start_time: [1692074227, 516340970]
+build_end_time: [1692074284, 312346935]
+inputs:
+  "/Users/admin/Desktop/Development/wonder_wrap/macos/Flutter/GeneratedPluginRegistrant.swift": [1692074153, 876749038]
+  "/Users/admin/Desktop/Development/wonder_wrap/macos/Runner/AppDelegate.swift": [1689192122, 0]
+  "/Users/admin/Desktop/Development/wonder_wrap/macos/Runner/MainFlutterWindow.swift": [1689192122, 0]
