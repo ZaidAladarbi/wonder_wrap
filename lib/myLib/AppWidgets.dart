@@ -45,7 +45,9 @@ class StartingPageState extends State<StartingPage> {
         appLib.createColumn([
           SizedBox(
               width: 250,
-              child: appLib.insertPhoto(path: '/Users/admin/Desktop/Development/wonder_wrap/images/Starting.png')),
+              child: appLib.insertPhoto(
+                  path:
+                      '/Users/admin/Desktop/Development/wonder_wrap/images/Starting.png')),
           SizedBox(height: 70),
           appLib.createButton(_buttonText, SignInPage(), context),
         ]));
@@ -612,32 +614,52 @@ class QuestionPageState extends State<QuestionPage> {
   Widget build(BuildContext context) {
     return appLib.createPage(
         context,
-        appLib.createColumn([
-          SizedBox(height: 20),
-          Center(
-            child: stackIndex < questionsList.length
-                ? Stack(
-                    children: [
-                      for (int i = stackIndex; i < questionsList.length; i++)
-                        IgnorePointer(
-                          ignoring: i != stackIndex,
-                          child: Opacity(
-                            opacity: i == stackIndex ? 1.0 : 0.0,
-                            child: SizedBox(
-                              width: 300,
-                              height: 600,
-                              child: appLib.createSwipingImageCard(
-                                questionsList[i]['image'],
-                                handleSwipe,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  )
-                : SizedBox(),
-          )
-        ]));
+        Center(
+            child: FutureBuilder<void>(
+                future: myFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(
+                      width: 200,
+                      child: Center(
+                        child: appLib.insertPhoto(
+                            path:
+                                "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return appLib.createColumn([
+                      SizedBox(height: 20),
+                      Center(
+                        child: stackIndex < questionsList.length
+                            ? Stack(
+                                children: [
+                                  for (int i = stackIndex;
+                                      i < questionsList.length;
+                                      i++)
+                                    IgnorePointer(
+                                      ignoring: i != stackIndex,
+                                      child: Opacity(
+                                        opacity: i == stackIndex ? 1.0 : 0.0,
+                                        child: SizedBox(
+                                          width: 300,
+                                          height: 600,
+                                          child: appLib.createSwipingImageCard(
+                                            questionsList[i]['image'],
+                                            handleSwipe,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              )
+                            : SizedBox(),
+                      )
+                    ]);
+                  }
+                })));
   }
 }
 
@@ -697,6 +719,7 @@ class GiftsPageState extends State<GiftsPage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
+                    width: 275,
                     child: Center(
                       child: appLib.insertPhoto(
                           path:
@@ -711,11 +734,15 @@ class GiftsPageState extends State<GiftsPage> {
                       height: AppConstants.pageHeight,
                       child: Column(children: [
                         SizedBox(
+                          width: 150,
                           height: 30,
                         ),
-                        appLib.insertPhoto(
-                            path:
-                                '/Users/admin/Desktop/Development/wonder_wrap/images/TheAIHasChosenYourGift.png'),
+                        SizedBox(
+                          width: 275,
+                          child: appLib.insertPhoto(
+                              path:
+                                  '/Users/admin/Desktop/Development/wonder_wrap/images/TheAIHasChosenYourGift.png'),
+                        ),
                         SizedBox(
                           height: 30,
                         ),

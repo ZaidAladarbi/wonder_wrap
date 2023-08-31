@@ -287,7 +287,8 @@ class AppLib {
     return SizedBox(
       width: MultiOptionConstants.sizedBoxWidth,
       child: createColumn([
-        createRichText(hintText, fontSize: MultiOptionConstants.buttonFontSize, bold: true),
+        createRichText(hintText,
+            fontSize: MultiOptionConstants.buttonFontSize, bold: true),
         SizedBox(height: 10),
         GridView.builder(
           shrinkWrap: true,
@@ -317,8 +318,8 @@ class AppLib {
                   shape: RoundedRectangleBorder(
                     side: BorderSide(
                       color: isSelected
-                      ? ButtonConstants.primaryButtonColor
-                      : Colors.pink[200]!,//borderColor,
+                          ? ButtonConstants.primaryButtonColor
+                          : Colors.pink[200]!, //borderColor,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -329,7 +330,8 @@ class AppLib {
                   option,
                   textColor: isSelected
                       ? AppColors.primaryTextColor
-                      : AppColors.secondaryTextColor,//AppColors.otherTextColor,
+                      : AppColors
+                          .secondaryTextColor, //AppColors.otherTextColor,
                 ),
               ),
             );
@@ -380,7 +382,7 @@ class AppLib {
             ),
           );
         } else {
-          return CircularProgressIndicator(); // or placeholder
+          return CircularProgressIndicator();
         }
       },
     );
