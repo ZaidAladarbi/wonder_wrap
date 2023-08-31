@@ -704,7 +704,7 @@ class GiftsPageState extends State<GiftsPage> {
                   );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
-                } else{
+                } else {
                   return SizedBox(
                       width: AppConstants.pageWidth,
                       height: AppConstants.pageHeight,
@@ -755,7 +755,7 @@ class GiftsPageState extends State<GiftsPage> {
                           height: 20,
                         ),
                       ]));
-                } 
+                }
               }),
         ));
   }
@@ -798,7 +798,6 @@ class HistoryPageState extends State<HistoryPage> {
     print(giftNames.length);
     print(giftUrls.length);
     //print(giftCreated.length);
-
   }
 
   dynamic tideNamesUrls(var historyList) {
@@ -806,8 +805,8 @@ class HistoryPageState extends State<HistoryPage> {
     for (int i = 0; i < historyList.length; i++) {
       //giftCreated.add(historyList[i]['created']);
       for (int j = 0; j < historyList[i]['gifts'].length; j++) {
-      giftNames.add(historyList[i]['gifts'][j]['name']);
-      giftUrls.add(historyList[i]['gifts'][j]['url']);
+        giftNames.add(historyList[i]['gifts'][j]['name']);
+        giftUrls.add(historyList[i]['gifts'][j]['url']);
       }
     }
 
@@ -828,21 +827,21 @@ class HistoryPageState extends State<HistoryPage> {
     return appLib.createPage(
         context,
         Center(
-          child: FutureBuilder<void>(
-              future: myFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    child: Center(
-                      child: appLib.insertPhoto(
-                          path:
-                              "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else{
-                  return Expanded(
+            child: FutureBuilder<void>(
+          future: myFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox(
+                child: Center(
+                  child: appLib.insertPhoto(
+                      path:
+                          "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Expanded(
                 child: ListView.builder(
                   itemCount: giftNames.length,
                   itemBuilder: (context, index) {
