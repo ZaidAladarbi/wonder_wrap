@@ -45,7 +45,7 @@ class StartingPageState extends State<StartingPage> {
         appLib.createColumn([
           SizedBox(
               width: 250,
-              child: appLib.insertPhoto(path: 'images/starting.png')),
+              child: appLib.insertPhoto(path: '/Users/admin/Desktop/Development/wonder_wrap/images/Starting.png')),
           SizedBox(height: 70),
           appLib.createButton(_buttonText, SignInPage(), context),
         ]));
@@ -562,11 +562,12 @@ class QuestionPageState extends State<QuestionPage> {
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
   Map<String, String> getQuestionsDic = {};
+  late final Future myFuture;
 
   @override
   void initState() {
     super.initState();
-    fetchQuestions();
+    myFuture = fetchQuestions();
   }
 
   Future<void> fetchQuestions() async {
@@ -826,86 +827,73 @@ class HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return appLib.createPage(
         context,
-        Center(
-            child: FutureBuilder<void>(
-          future: myFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox(
-                child: Center(
-                  child: appLib.insertPhoto(
-                      path:
-                          "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: giftNames.length,
-                  itemBuilder: (context, index) {
-                    final giftName = giftNames[index];
-                    final giftUrl = giftUrls[index];
+        FutureBuilder<void>(
+            future: myFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  width: 150,
+                  child: Center(
+                    child: appLib.insertPhoto(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 175,
+                      child: appLib.insertPhoto(),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: giftNames.length,
+                        itemBuilder: (context, index) {
+                          final giftName = giftNames[index];
+                          final giftUrl = giftUrls[index];
 
-                    return Column(children: [
-                      //if (index % 2 == 0) appLib.createRichText(giftCreated[(index ~/ 2)],bold: true),
-                      ListTile(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: ButtonConstants.primaryButtonColor,
-                              width: 1),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        leading: CircleAvatar(
-                          backgroundColor: ButtonConstants.primaryButtonColor,
-                        ),
-                        title: appLib.createRichText(giftName,
-                            fontFamily: 'cabin', bold: true),
-                        onTap: () async {
-                          if (await canLaunchUrl(Uri.parse(giftUrl))) {
-                            await launchUrl(Uri.parse(giftUrl));
-                          } else {
-                            print('Could not launch gift $index');
-                          }
+                          return Column(children: [
+                            //if (index % 2 == 0) appLib.createRichText(giftCreated[(index ~/ 2)],bold: true),
+                            Card(
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: ButtonConstants.primaryButtonColor,
+                                      width: 1),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                leading: CircleAvatar(
+                                  backgroundColor:
+                                      ButtonConstants.primaryButtonColor,
+                                ),
+                                title: appLib.createRichText(giftName,
+                                    fontFamily: 'cabin', bold: true),
+                                onTap: () async {
+                                  if (await canLaunchUrl(Uri.parse(giftUrl))) {
+                                    await launchUrl(Uri.parse(giftUrl));
+                                  } else {
+                                    print('Could not launch gift $index');
+                                  }
+                                },
+                              ),
+                            ),
+                          ]);
                         },
                       ),
-                    ]);
-                  },
-                ),
-              );
-            }
-          },
-        )));
-  }
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class Testing extends StatefulWidget {
-  @override
-  TestingState createState() => TestingState();
-}
-
-class TestingState extends State<Testing> {
-  Widget createSwipingImageCard() {
-    return Container(
-      color: AppColors.backgroundColor,
-      width: SwipingCardsConstants.photoWidth,
-      height: SwipingCardsConstants.photoHeight,
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: appLib.insertPhoto(
-            path:
-                '/Users/admin/Desktop/Development/wonder_wrap/images/artdrawing.png'),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return appLib.createPage(context, createSwipingImageCard());
+                    ),
+                    SizedBox(
+                      height: 50,
+                    )
+                  ],
+                );
+              }
+            }));
   }
 }
