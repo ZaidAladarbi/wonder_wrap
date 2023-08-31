@@ -10,7 +10,7 @@ void main() {
       create: (context) => AuthProvider(),
       child: const MyApp(),
     ), 
-  );
+  );  
   print('app running');
 }
 

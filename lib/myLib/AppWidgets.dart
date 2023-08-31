@@ -28,26 +28,6 @@ List questionsList = [];
 Map<String, String> giftsDic = {};
 Map<String, String> historyDic = {};
 
-List recoS = [
-  {
-    'id': 446,
-    'url':
-        'https://www.amazon.com/Straw-Picnic-Market-Oversized-Summer/dp/B07LBFFSDS/ref=lp_19201304011_1_1?sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&ufe=app_do%3Aamzn1.fos.f5122f16-c3e8-4386-bf32-63e904010ad0',
-    'provider': 'Amazon',
-    'category': 'something',
-    'name':
-        'Straw Bags for Women,Straw Bags and Totes,Straw Beach Bag,Straw Picnic Bag,Straw Bag Large,Straw Market Bag',
-    'price': 120.00
-  },
-  {
-    'id': 206,
-    'url':
-        'https://www.amazon.com/Roku-Streaming-Device-Vision-Controls/dp/B09BKCDXZC/ref=sr_1_12?crid=1UXHMSH3HZ21W&keywords=Apple%2BTV&qid=1692091760&s=electronics&sprefix=apple%2Btv%2Celectronics%2C159&sr=1-12&th=1',
-    'provider': 'Amazon',
-    'category': 'something, name: Roku Streaming Stick 4K, price: 39.99'
-  }
-];
-
 class StartingPage extends StatefulWidget {
   const StartingPage({Key? key}) : super(key: key);
 
@@ -63,7 +43,9 @@ class StartingPageState extends State<StartingPage> {
     return appLib.createPage(
         context,
         appLib.createColumn([
-          appLib.insertPhoto(path: 'images/starting.png'),
+          SizedBox(
+              width: 250,
+              child: appLib.insertPhoto(path: 'images/starting.png')),
           SizedBox(height: 70),
           appLib.createButton(_buttonText, SignInPage(), context),
         ]));
@@ -78,11 +60,11 @@ class SignInPage extends StatefulWidget {
 }
 
 class SignInPageState extends State<SignInPage> {
-  final String _signInText = 'Sign In';
-  final String _notUserText = 'Don\'t have an account';
+  final String _signInText = 'Hello there!';
+  final String _notUserText = 'New Here? Explore Gifts the Smart Way';
   final String _signUpText = 'Sign Up';
   final String _guestText = 'Continue as a Guest';
-  final String _logInText = 'Log in';
+  final String _logInText = 'Go!'; //'Log in';
   final String _emailLabel = 'Email';
   final String _passwordLabel = 'Password';
 
@@ -139,8 +121,8 @@ class SignInPageState extends State<SignInPage> {
     BuildContext context, {
     double height = ButtonConstants.buttonHeight,
     double width = ButtonConstants.buttonWidth,
-    Color buttonColor = ButtonConstants.primaryButtonColor,
-    Color textColor = AppColors.primaryTextColor,
+    Color buttonColor = ButtonConstants.secondaryButtonColor,
+    Color textColor = AppColors.secondaryTextColor,
   }) {
     return SizedBox(
         width: width,
@@ -150,6 +132,11 @@ class SignInPageState extends State<SignInPage> {
               elevation: 2,
               backgroundColor: buttonColor,
               shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color:
+                      ButtonConstants.primaryButtonColor, //Colors.pink[200]!,
+                  width: 1.5,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -164,25 +151,30 @@ class SignInPageState extends State<SignInPage> {
     return appLib.createPage(
         context,
         appLib.createColumn([
-          if (showErrorMessage)
-            appLib.createRichText(
-              'Incorrect username or password.',
-              textColor: Colors.red, // Customize the color
-            ),
-          appLib.insertPhoto(),
-          SizedBox(height: 30),
-          appLib.createRichText(_signInText, fontSize: 22, bold: true),
-          SizedBox(height: 20),
-          appLib.createTextField(emailController, _emailLabel),
-          SizedBox(height: 10),
-          appLib.createTextField(passwordController, _passwordLabel),
-          SizedBox(height: 20),
-          createSignInVerificationButton(_logInText, GifteePage(), context),
+          SizedBox(
+            width: 175,
+            child: appLib.insertPhoto(),
+          ),
+          SizedBox(height: 25),
+          appLib.createRichText(_signInText,
+              fontSize: 22,
+              bold: true,
+              textColor: TextFieldConstants.textOfTextFieldColor),
+          SizedBox(height: 7.5),
+          appLib.createRichText("Unlock a World of Gift Inspiration with AI!",
+              fontSize: 14, textColor: Colors.blueGrey),
+          //if (showErrorMessage) appLib.createRichText('Incorrect username or password.', textColor: Colors.red,),
           SizedBox(height: 15),
-          appLib.createRichText(_notUserText),
+          appLib.createTextField(emailController, _emailLabel),
+          SizedBox(height: 7.5),
+          appLib.createTextField(passwordController, _passwordLabel),
+          SizedBox(height: 15),
+          createSignInVerificationButton(_logInText, GifteePage(), context),
+          SizedBox(height: 10),
+          appLib.createRichText(_notUserText, textColor: Colors.blueGrey),
           SizedBox(height: 5),
           appLib.createGuestureText(_signUpText, SignUpPage(), context),
-          SizedBox(height: 15),
+          SizedBox(height: 7.5),
           appLib.createDividerWithText('or'),
           SizedBox(height: 15),
           //appLib.createButton(_guestText, GifteePage(), context, buttonColor: ButtonConstants.primaryButtonColor, textColor: AppColors.primaryTextColor),
@@ -197,7 +189,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpPageState extends State<SignUpPage> {
-  final String _createText = 'Create a new account';
+  final String _createText = 'Create Account';
   final String _emailLabel = 'Email';
   final String _passwordLabel = 'Password';
   final String _confirmPasswordLabel = 'Confirm Password';
@@ -255,9 +247,7 @@ class SignUpPageState extends State<SignUpPage> {
         appLib.createColumn([
           appLib.createRichText(_createText,
               fontSize: AppConstants.subTitleFontSize),
-          SizedBox(height: 20),
-          appLib.insertPhoto(),
-          SizedBox(height: 20),
+          SizedBox(height: 25),
           appLib.createNameRow(firstNameController, lastNameController),
           SizedBox(height: 10),
           appLib.createTextField(emailController, _emailLabel),
@@ -391,6 +381,9 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
     return appLib.createPage(
         context,
         appLib.createColumn([
+          SizedBox(
+            height: 30,
+          ),
           appLib.createSelectOption(
               _relationshipText,
               [
@@ -406,7 +399,7 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
               selectedRelation = newOption;
             });
           }),
-          SizedBox(height: 20),
+          SizedBox(height: 40),
           appLib.createSelectOption(
               _ocassionText,
               [
@@ -499,7 +492,7 @@ class PriceRangePageState extends State<PriceRangePage> {
         ),
         SizedBox(height: 20),
         appLib.createMultiButton(priceRanges[0], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -508,7 +501,7 @@ class PriceRangePageState extends State<PriceRangePage> {
           height: 15,
         ),
         appLib.createMultiButton(priceRanges[1], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -517,7 +510,7 @@ class PriceRangePageState extends State<PriceRangePage> {
           height: 15,
         ),
         appLib.createMultiButton(priceRanges[2], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -526,7 +519,7 @@ class PriceRangePageState extends State<PriceRangePage> {
           height: 15,
         ),
         appLib.createMultiButton(priceRanges[3], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -535,7 +528,7 @@ class PriceRangePageState extends State<PriceRangePage> {
           height: 10,
         ),
         appLib.createMultiButton(priceRanges[4], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -544,7 +537,7 @@ class PriceRangePageState extends State<PriceRangePage> {
           height: 10,
         ),
         appLib.createMultiButton(priceRanges[5], selectedPriceRange,
-            (priceRange) {
+            borderColor: Colors.pink[200]!, (priceRange) {
           setState(() {
             selectedPriceRange = priceRange;
           });
@@ -591,10 +584,10 @@ class QuestionPageState extends State<QuestionPage> {
       answersList.add({'question_id': questionId, 'value': answer});
 
       if (like) {
-        print("Liked!");
+        //print("Liked!");
         getQuestionsDic[questionsList[stackIndex]['id'].toString()] = 'yes';
       } else {
-        print("Disliked!");
+        //print("Disliked!");
         getQuestionsDic[questionsList[stackIndex]['id'].toString()] = 'no';
       }
 
@@ -607,9 +600,7 @@ class QuestionPageState extends State<QuestionPage> {
         print('answers saved');
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  GiftsPage(recommendationsDictionary: giftsDic)),
+          MaterialPageRoute(builder: (context) => GiftsPage()),
         );
         print('navigated to gifts page');
       }
@@ -621,46 +612,35 @@ class QuestionPageState extends State<QuestionPage> {
     return appLib.createPage(
         context,
         appLib.createColumn([
-          SizedBox(height: 30),
-          FutureBuilder<void>(builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              // Once the future is complete
-              return Center(
-                child: Stack(
-                  children: [
-                    for (int i = stackIndex; i < questionsList.length; i++)
-                      IgnorePointer(
-                        ignoring: i != stackIndex,
-                        child: Opacity(
-                          opacity: i == stackIndex ? 1.0 : 0.0,
-                          child: SizedBox(
-                            width: 300,
-                            height: 600,
-                            child: appLib.createSwipingImageCard(
-                              questionsList[i]['image'],
-                              handleSwipe,
+          SizedBox(height: 20),
+          Center(
+            child: stackIndex < questionsList.length
+                ? Stack(
+                    children: [
+                      for (int i = stackIndex; i < questionsList.length; i++)
+                        IgnorePointer(
+                          ignoring: i != stackIndex,
+                          child: Opacity(
+                            opacity: i == stackIndex ? 1.0 : 0.0,
+                            child: SizedBox(
+                              width: 300,
+                              height: 600,
+                              child: appLib.createSwipingImageCard(
+                                questionsList[i]['image'],
+                                handleSwipe,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              );
-            }
-          })
+                    ],
+                  )
+                : SizedBox(),
+          )
         ]));
   }
 }
 
 class GiftsPage extends StatefulWidget {
-  final Map<String, String> recommendationsDictionary;
-
-  GiftsPage({required this.recommendationsDictionary});
-
   @override
   GiftsPageState createState() => GiftsPageState();
 }
@@ -671,11 +651,12 @@ class GiftsPageState extends State<GiftsPage> {
   List recommendationsList = [];
   List<String> giftNames = [];
   List<String> giftUrls = [];
+  late final Future myFuture;
 
   @override
   void initState() {
     super.initState();
-    fetchRecommendations();
+    myFuture = fetchRecommendations();
   }
 
   Future<void> fetchRecommendations() async {
@@ -683,17 +664,21 @@ class GiftsPageState extends State<GiftsPage> {
       'entry_id': entry_id,
       'answers': answersList
     };
-    var fetchedRecommendationsList =
-        await appReq.getRecommendations(token, entry_id, entryDic);
+    var fetchedRecommendationsList = await appReq.getRecommendations(entryDic);
     setState(() {
       recommendationsList = fetchedRecommendationsList;
     });
 
-    //print(recommendationsList);
+    print(recommendationsList.length);
+
+    var dic = tideNamesUrls(recommendationsList);
+    setState(() {
+      giftNames = dic['giftNames'];
+      giftUrls = dic['giftUrls'];
+    });
   }
 
   dynamic tideNamesUrls(var recommendationsList) {
-    print('tiding started');
     for (int i = 0; i < recommendationsList.length; i++) {
       giftNames.add(recommendationsList[i]['name']);
       giftUrls.add(recommendationsList[i]['url']);
@@ -703,79 +688,76 @@ class GiftsPageState extends State<GiftsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('recommendatoinsList started tiding');
-    print('recommendatoinsList started tiding');
-    print(recommendationsList);
-    var dic = tideNamesUrls(recommendationsList);
-    List<String> giftNames = dic['giftNames'];
-    List<String> giftUrls = dic['giftUrls'];
-
-    //print(giftNames);
-    //print(giftNames.length);
-    print(giftNames.runtimeType);
-
-    //print(giftUrls);
-    //print(giftUrls.length);
-    print(giftUrls.runtimeType);
-
     return appLib.createPage(
-      context,
-      Center(
-        child: FutureBuilder<void>(
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return FutureBuilder<void>(
-                future: Future.delayed(Duration(seconds: 1)),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else {
-                    return Column(children: [
-                      Expanded(
-                          child: ListView.builder(
-                        itemCount: giftNames.length,
-                        itemBuilder: (context, index) {
-                          final giftName = giftNames[index];
-                          final giftUrl = giftUrls[index];
+        context,
+        Center(
+          child: FutureBuilder<void>(
+              future: myFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    child: Center(
+                      child: appLib.insertPhoto(
+                          path:
+                              "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else{
+                  return SizedBox(
+                      width: AppConstants.pageWidth,
+                      height: AppConstants.pageHeight,
+                      child: Column(children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        appLib.insertPhoto(
+                            path:
+                                '/Users/admin/Desktop/Development/wonder_wrap/images/TheAIHasChosenYourGift.png'),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Expanded(
+                            child: ListView.builder(
+                          itemCount: giftNames.length,
+                          itemBuilder: (context, index) {
+                            final giftName = giftNames[index];
+                            final giftUrl = giftUrls[index];
 
-                          return ListTile(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: ButtonConstants.primaryButtonColor,
-                                  width: 1),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            leading: CircleAvatar(
-                              backgroundColor:
-                                  ButtonConstants.primaryButtonColor,
-                            ),
-                            title: Text(giftName),
-                            onTap: () async {
-                              if (await canLaunchUrl(Uri.parse(giftUrl))) {
-                                await launchUrl(Uri.parse(giftUrl));
-                              } else {
-                                // Handle the case where the URL can't be launched
-                                // For example, you can show an error message
-                                print('Could not launch gift $index');
-                              }
-                            },
-                          );
-                        },
-                      )),
-                      appLib.createButton('Go to Cart', HistoryPage(), context)
-                    ]);
-                  }
-                },
-              );
-            }
-          },
-        ),
-      ),
-    );
+                            return Card(
+                                child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: ButtonConstants.primaryButtonColor,
+                                    width: 3),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              leading: CircleAvatar(
+                                backgroundColor:
+                                    ButtonConstants.primaryButtonColor,
+                              ),
+                              title: appLib.createRichText(giftName,
+                                  bold: true, fontFamily: 'cabin'),
+                              onTap: () async {
+                                if (await canLaunchUrl(Uri.parse(giftUrl))) {
+                                  await launchUrl(Uri.parse(giftUrl));
+                                } else {
+                                  print('Could not launch gift $index');
+                                }
+                              },
+                            ));
+                          },
+                        )),
+                        appLib.createButton(
+                            'Go to Cart', HistoryPage(), context),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ]));
+                } 
+              }),
+        ));
   }
 }
 
@@ -789,67 +771,87 @@ class HistoryPageState extends State<HistoryPage> {
   double entry_id = EntryManager().entryid;
   List historyList = [];
   List<String> giftNames = [];
+  List<String> giftCreated = [];
   List<String> giftUrls = [];
+  late final Future myFuture;
 
   @override
   void initState() {
     super.initState();
-    fetchHistory();
+    myFuture = fetchHistory();
   }
 
   Future<void> fetchHistory() async {
     print('history started');
-    List fetchedHistoryList = await appReq.getHistory(token);
+    List fetchedHistoryList = await appReq.getHistory();
     setState(() {
       historyList = fetchedHistoryList;
     });
-    print('history got');
-    print(historyList.length);
+
+    var dic = tideNamesUrls(historyList);
+    setState(() {
+      giftNames = dic['giftNames'];
+      giftUrls = dic['giftUrls'];
+      //giftCreated = dic['giftCreated'];
+    });
+
+    print(giftNames.length);
+    print(giftUrls.length);
+    //print(giftCreated.length);
+
   }
 
   dynamic tideNamesUrls(var historyList) {
     print('tiding started');
     for (int i = 0; i < historyList.length; i++) {
+      //giftCreated.add(historyList[i]['created']);
       for (int j = 0; j < historyList[i]['gifts'].length; j++) {
-        giftNames.add(historyList[i]['gifts'][j]['name']);
-        giftUrls.add(historyList[i]['gifts'][j]['url']);
+      giftNames.add(historyList[i]['gifts'][j]['name']);
+      giftUrls.add(historyList[i]['gifts'][j]['url']);
       }
     }
 
     List giftNamesReversed = giftNames.reversed.toList();
     List giftUrlsReversed = giftUrls.reversed.toList();
-  
+    //List giftCreatedReversed = giftCreated.reversed.toList();
+
     print('done tiding');
-    return {'giftNames': giftNamesReversed, 'giftUrls': giftUrlsReversed};
+    return {
+      'giftNames': giftNamesReversed,
+      'giftUrls': giftUrlsReversed,
+      //'giftCreated': giftCreatedReversed
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    var dic = tideNamesUrls(historyList);
-    List<String> giftNames = dic['giftNames'];
-    List<String> giftUrls = dic['giftUrls'];
     return appLib.createPage(
-      context,
-      FutureBuilder<void>(
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return FutureBuilder<void>(
-              future: Future.delayed(Duration(seconds: 1)),
+        context,
+        Center(
+          child: FutureBuilder<void>(
+              future: myFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else {
-                  return ListView.builder(
-                    itemCount: giftNames.length,
-                    itemBuilder: (context, index) {
-                      final giftName = giftNames[index];
-                      final giftUrl = giftUrls[index];
+                  return SizedBox(
+                    child: Center(
+                      child: appLib.insertPhoto(
+                          path:
+                              "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else{
+                  return Expanded(
+                child: ListView.builder(
+                  itemCount: giftNames.length,
+                  itemBuilder: (context, index) {
+                    final giftName = giftNames[index];
+                    final giftUrl = giftUrls[index];
 
-                      return ListTile(
+                    return Column(children: [
+                      //if (index % 2 == 0) appLib.createRichText(giftCreated[(index ~/ 2)],bold: true),
+                      ListTile(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                               color: ButtonConstants.primaryButtonColor,
@@ -859,25 +861,52 @@ class HistoryPageState extends State<HistoryPage> {
                         leading: CircleAvatar(
                           backgroundColor: ButtonConstants.primaryButtonColor,
                         ),
-                        title: Text(giftName),
+                        title: appLib.createRichText(giftName,
+                            fontFamily: 'cabin', bold: true),
                         onTap: () async {
                           if (await canLaunchUrl(Uri.parse(giftUrl))) {
                             await launchUrl(Uri.parse(giftUrl));
                           } else {
-                            // Handle the case where the URL can't be launched
-                            // For example, you can show an error message
                             print('Could not launch gift $index');
                           }
                         },
-                      );
-                    },
-                  );
-                }
-              },
-            );
-          }
-        },
+                      ),
+                    ]);
+                  },
+                ),
+              );
+            }
+          },
+        )));
+  }
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Testing extends StatefulWidget {
+  @override
+  TestingState createState() => TestingState();
+}
+
+class TestingState extends State<Testing> {
+  Widget createSwipingImageCard() {
+    return Container(
+      color: AppColors.backgroundColor,
+      width: SwipingCardsConstants.photoWidth,
+      height: SwipingCardsConstants.photoHeight,
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: appLib.insertPhoto(
+            path:
+                '/Users/admin/Desktop/Development/wonder_wrap/images/artdrawing.png'),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return appLib.createPage(context, createSwipingImageCard());
   }
 }

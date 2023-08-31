@@ -32,6 +32,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "compute",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/compute-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.15"
+    },
+    {
       "name": "cupertino_icons",
       "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.5",
       "packageUri": "lib/",
@@ -344,7 +350,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-08-26T03:38:15.634512Z",
+  "generated": "2023-08-30T19:36:06.042163Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }

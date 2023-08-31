@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+
+
 class AppRatio {
   static const double widthRatio = 1.2;
   static const double heightRatio = 1;
@@ -15,18 +17,18 @@ class ConstantColors {
 class AppConstants {
   static const double pageHeight = 700; // ==> get from media.query
   static const double pageWidth =
-      400 * AppRatio.widthRatio; // ==> get from media.query
+      350 * AppRatio.widthRatio; // ==> get from media.query
   static const double titleFontSize = 30;
   static const double subTitleFontSize = 25;
   static const double textFontSize = 20;
-  static const String appUrl = 'http://10.0.0.15:8000/ai';//'http://3.13.91.206/ai';
+  static const String appUrl = 'https://wonderwrap-fjkb7.ondigitalocean.app/ai';
 }
 
 class AppColors {
   static const Color primaryTextColor = ConstantColors.whiteColor;
   static const Color secondaryTextColor = ConstantColors.redColor;
   static const Color otherTextColor = Colors.black;
-  static Color backgroundColor = Colors.deepOrange[50]!;
+  static Color backgroundColor = ConstantColors.whiteColor;//Colors.deepOrange[50]!;
 }
 
 class ButtonConstants {
@@ -40,7 +42,8 @@ class ButtonConstants {
 class TextFieldConstants {
   static const double textFieldWidth = 250 * AppRatio.widthRatio;
   static const double textFieldHeight = 50;
-  static const Color textFieldColor = ConstantColors.redColor;
+  static const Color textFieldColor = Colors.grey;//ConstantColors.redColor;
+  static const Color textOfTextFieldColor = Colors.black;
 }
 
 class DividerConstants {
@@ -55,10 +58,10 @@ class SliderConstants {
 }
 
 class MultiOptionConstants {
-  static const double sizedBoxWidth = 250 * AppRatio.widthRatio;
-  static const double sizedBoxHeight = 250;
-  static const double buttonWidth = 120 * AppRatio.widthRatio;
-  static const double buttonHeight = 35;
+  static const double sizedBoxWidth = 280 * AppRatio.widthRatio;
+  static const double sizedBoxHeight = 280;
+  static const double buttonWidth = 130 * AppRatio.widthRatio;
+  static const double buttonHeight = 42;
   static const double buttonFontSize = 20;
   static const Color clickedButtonColor = ConstantColors.redColor;
   static const Color unclickedButtonColor = ConstantColors.whiteColor;

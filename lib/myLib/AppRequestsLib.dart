@@ -81,8 +81,7 @@ class AppRequests {
     return responseDic['questions'];
   }
 
-  Future<dynamic> getRecommendations(
-      String token, entry_id, var entryDic) async {
+  Future<dynamic> getRecommendations(var entryDic) async {
     final url = '$appUrl/get_recommendation/';
 
     String token = TokenManager().token;
@@ -95,7 +94,6 @@ class AppRequests {
         },
         body: jsonEncode(entryDic));
     final responseDic = jsonDecode(response.body);
-    //print(responseDic);
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Recommendations got successfully');
     } else {
@@ -104,7 +102,7 @@ class AppRequests {
     return responseDic;
   }
 
-  Future<dynamic> getHistory(String token) async {
+  Future<dynamic> getHistory() async {
     final url = '$appUrl/get_entries/';
 
     String token = TokenManager().token;

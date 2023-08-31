@@ -1,22 +1,26 @@
 // ignore_for_file: file_names, await_only_futures
 
 import 'package:flutter/material.dart';
-import 'dart:convert';
+import 'dart:async';
 import 'dart:typed_data';
+import 'dart:convert';
+import 'package:compute/compute.dart';
 
 import 'AppConstants.dart';
 
 AppLib appLib = AppLib();
 
 class AppLib {
-  Widget insertPhoto({String path = "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"}) {
+  Widget insertPhoto(
+      {String path =
+          "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"}) {
     return Image.asset(path, fit: BoxFit.cover);
   }
 
   Widget createRichText(String text,
       {Color textColor = AppColors.otherTextColor,
       double fontSize = ButtonConstants.buttonFontSize,
-      String fontFamily = 'Abel',
+      String fontFamily = 'quicksand',
       bool bold = false,
       bool underLine = false}) {
     return RichText(
@@ -43,6 +47,7 @@ class AppLib {
     double width = ButtonConstants.buttonWidth,
     Color buttonColor = ButtonConstants.primaryButtonColor,
     Color textColor = AppColors.primaryTextColor,
+    Color borderColor = ButtonConstants.primaryButtonColor,
   }) {
     return SizedBox(
         width: width,
@@ -52,6 +57,10 @@ class AppLib {
               elevation: 2,
               backgroundColor: buttonColor,
               shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: borderColor,
+                  width: 2,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -98,22 +107,17 @@ class AppLib {
       height: height,
       child: TextFormField(
         controller: controller,
-        style: TextStyle(
-            color: TextFieldConstants.textFieldColor), // Set text color
+        style: TextStyle(color: TextFieldConstants.textOfTextFieldColor),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(
-              color: TextFieldConstants.textFieldColor), // Set label text color
+          labelStyle: TextStyle(color: TextFieldConstants.textOfTextFieldColor),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: TextFieldConstants.textFieldColor), // Set border color
+            borderSide: BorderSide(color: TextFieldConstants.textFieldColor),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: TextFieldConstants.textFieldColor), // Set border color
+            borderSide: BorderSide(color: TextFieldConstants.textFieldColor),
           ),
         ),
-
         obscureText: label == 'Password' || label == 'Confirm Password',
       ),
     );
@@ -154,9 +158,13 @@ class AppLib {
 
   // GifteePage functions
   Widget createMultiButton(
-      String label, String selected, Function(String) onPressed,
-      {double height = ButtonConstants.buttonHeight,
-      double width = ButtonConstants.buttonWidth}) {
+    String label,
+    String selected,
+    Function(String) onPressed, {
+    double height = ButtonConstants.buttonHeight,
+    double width = ButtonConstants.buttonWidth,
+    Color borderColor = ButtonConstants.primaryButtonColor,
+  }) {
     return SizedBox(
       width: width,
       height: height,
@@ -166,6 +174,10 @@ class AppLib {
                 ? ButtonConstants.primaryButtonColor
                 : ButtonConstants.secondaryButtonColor,
             shape: RoundedRectangleBorder(
+              side: BorderSide(
+                color: borderColor,
+                width: 2,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -193,7 +205,7 @@ class AppLib {
       child: SliderTheme(
         data: SliderThemeData(
           activeTrackColor: sliderActiveColor,
-          inactiveTrackColor: sliderInactiveColor,
+          inactiveTrackColor: Colors.deepOrange[50], //sliderInactiveColor,
           thumbColor: thumbColor,
           thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8.0),
           overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
@@ -260,17 +272,22 @@ class AppLib {
           MaterialPageRoute(builder: (context) => navigationdPage),
         );
       },
-      child: createRichText('Sign up', underLine: true),
+      child: createRichText('Sign up', bold: true), // underLine: true),
     );
   }
 
   // RelationAndOcassionPage function
-  Widget createSelectOption(String hintText, List<String> options,
-      String selectedOption, Function(String) onChanged) {
+  Widget createSelectOption(
+    String hintText,
+    List<String> options,
+    String selectedOption,
+    Function(String) onChanged, {
+    Color borderColor = ButtonConstants.primaryButtonColor,
+  }) {
     return SizedBox(
       width: MultiOptionConstants.sizedBoxWidth,
       child: createColumn([
-        createRichText(hintText, fontSize: MultiOptionConstants.buttonFontSize),
+        createRichText(hintText, fontSize: MultiOptionConstants.buttonFontSize, bold: true),
         SizedBox(height: 10),
         GridView.builder(
           shrinkWrap: true,
@@ -298,14 +315,21 @@ class AppLib {
                       ? ButtonConstants.primaryButtonColor
                       : ButtonConstants.secondaryButtonColor,
                   shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: isSelected
+                      ? ButtonConstants.primaryButtonColor
+                      : Colors.pink[200]!,//borderColor,
+                      width: 2,
+                    ),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: createRichText(
+                  bold: true,
                   option,
                   textColor: isSelected
                       ? AppColors.primaryTextColor
-                      : AppColors.otherTextColor,
+                      : AppColors.secondaryTextColor,//AppColors.otherTextColor,
                 ),
               ),
             );
@@ -321,30 +345,44 @@ class AppLib {
     return Image.memory(decodedImage);
   }
 
-  Widget createSwipingImageCard(String base64EncodedImageString, Function(bool) handleSwipe) {
-    return Container(
-      color: AppColors.backgroundColor,
-      width: SwipingCardsConstants.photoWidth,
-      height: SwipingCardsConstants.photoHeight,
-      child: Dismissible(
-        key: Key(base64EncodedImageString), // Unique key for the card
-        onDismissed: (direction) {
-          if (direction == DismissDirection.endToStart) {
-            // Swiped to the left (dislike)
-            handleSwipe(false);
-          } else if (direction == DismissDirection.startToEnd) {
-            // Swiped to the right (like)
-            handleSwipe(true);
-          }
-        },
-        child: Card(
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: decodePhoto(base64EncodedImageString)
-        ),
-      ),
+  Future<Uint8List> decodePhotoAsync(String base64EncodedImageString) async {
+    return await compute(base64Decode, base64EncodedImageString);
+  }
+
+  Widget createSwipingImageCard(
+      String base64EncodedImageString, Function(bool) handleSwipe) {
+    return FutureBuilder<Uint8List>(
+      future: decodePhotoAsync(base64EncodedImageString),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          return Container(
+            color: AppColors.backgroundColor,
+            width: SwipingCardsConstants.photoWidth,
+            height: SwipingCardsConstants.photoHeight,
+            child: Dismissible(
+              key: Key(base64EncodedImageString), // Unique key for the card
+              onDismissed: (direction) {
+                if (direction == DismissDirection.endToStart) {
+                  // Swiped to the left (dislike)
+                  handleSwipe(false);
+                } else if (direction == DismissDirection.startToEnd) {
+                  // Swiped to the right (like)
+                  handleSwipe(true);
+                }
+              },
+              child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: decodePhoto(base64EncodedImageString)),
+            ),
+          );
+        } else {
+          return CircularProgressIndicator(); // or placeholder
+        }
+      },
     );
   }
 

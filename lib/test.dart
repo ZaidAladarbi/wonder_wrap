@@ -311,7 +311,7 @@ class PriceRangePageState extends State<PriceRangePage> {
               child: Text('Apply'),
             ),
           ],
-        ),
+        ),  
       ),
     );
   }

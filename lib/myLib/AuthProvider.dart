@@ -55,8 +55,8 @@ class AuthProvider extends ChangeNotifier {
     TextEditingController emailController,
     TextEditingController passwordController,
   ) async {
-    String email = 'guest1@example.com';
-    String password = 'ImGuest';
+    String email = 'guest@example.com';
+    String password = 'ImaGuest';
 
     await signIn(context, email, password, token);
     print('Guest Sign in handeled');
