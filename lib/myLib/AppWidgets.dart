@@ -179,7 +179,6 @@ class SignInPageState extends State<SignInPage> {
           SizedBox(height: 7.5),
           appLib.createDividerWithText('or'),
           SizedBox(height: 15),
-          //appLib.createButton(_guestText, GifteePage(), context, buttonColor: ButtonConstants.primaryButtonColor, textColor: AppColors.primaryTextColor),
           createGuestVerificationButton(_guestText, GifteePage(), context)
         ]));
   }
@@ -290,8 +289,11 @@ class GifteePageState extends State<GifteePage> {
     String token = TokenManager().token;
     print(entry_id);
     print(token);
+    print(selectedAge);
+    print(selectedGender);
     await appReq.postRequest(
-        '/set_age/', token, {'entry_id': entry_id, 'age': selectedAge});
+        '/set_age/', token, {'entry_id': entry_id, 'age': selectedAge.toInt()});
+    print('eoiontos');
     await appReq.postRequest('/set_gender/', token,
         {'entry_id': entry_id, 'gender': selectedGender});
     print('giftee button handled');
@@ -560,7 +562,7 @@ class QuestionPage extends StatefulWidget {
 
 class QuestionPageState extends State<QuestionPage> {
   int stackIndex = 0;
-  final double n_questions = 4;
+  int n_questions = 4;
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
   Map<String, String> getQuestionsDic = {};

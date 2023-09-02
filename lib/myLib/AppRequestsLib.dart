@@ -30,6 +30,7 @@ class AppRequests {
       },
       body: jsonEncode(body),
     );
+    print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('request Posted successfully');
     } else {
@@ -46,7 +47,6 @@ class AppRequests {
       headers: {
         'Authorization': "Token $token",
         "Content-type": "application/json",
-
       },
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -60,11 +60,11 @@ class AppRequests {
   }
 
   Future<dynamic> getQuestions(
-      String token, double entry_id, double n_questions) async {
+      String token, double entry_id, int n_questions) async {
     final url = '$appUrl/get_questions/';
 
-    int n_questions = 4;
     token = TokenManager().token;
+    //int n_questions = 4;
     final response = await http.post(Uri.parse(url),
         headers: {
           'Authorization': "Token $token",
@@ -97,7 +97,8 @@ class AppRequests {
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Recommendations got successfully');
     } else {
-      print('Failed to get recommendations. Status code: ${response.statusCode}');
+      print(
+          'Failed to get recommendations. Status code: ${response.statusCode}');
     }
     return responseDic;
   }

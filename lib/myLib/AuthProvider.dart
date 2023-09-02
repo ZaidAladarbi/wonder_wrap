@@ -49,7 +49,7 @@ class AuthProvider extends ChangeNotifier {
     await signIn(context, email, password, token);
     print('Sign in handeled');
   }
-  
+
   Future<void> handleGuestSignIn(
     BuildContext context,
     TextEditingController emailController,
@@ -58,7 +58,19 @@ class AuthProvider extends ChangeNotifier {
     String email = 'guest@example.com';
     String password = 'ImaGuest';
 
-    await signIn(context, email, password, token);
+    Response response = await post(Uri.parse('$appUrl/login/'), body: {
+      'email': email,
+      'password': password,
+      'first_name': 'Guest',
+      'last_name': 'guest'
+    });
+    final responseData = jsonDecode(response.body);
+    TokenManager().token = responseData['token'];
+    appReq.createEntry(token, entryDic, entry_id);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => GifteePage()));
+    print('navigated to GifteePage Successfully');
+
     print('Guest Sign in handeled');
   }
 }
