@@ -64,7 +64,6 @@ class AppRequests {
     final url = '$appUrl/get_questions/';
 
     token = TokenManager().token;
-    //int n_questions = 4;
     final response = await http.post(Uri.parse(url),
         headers: {
           'Authorization': "Token $token",

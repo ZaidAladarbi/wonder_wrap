@@ -562,7 +562,7 @@ class QuestionPage extends StatefulWidget {
 
 class QuestionPageState extends State<QuestionPage> {
   int stackIndex = 0;
-  int n_questions = 4;
+  int n_questions = 15;
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
   Map<String, String> getQuestionsDic = {};
@@ -635,30 +635,27 @@ class QuestionPageState extends State<QuestionPage> {
                     return appLib.createColumn([
                       SizedBox(height: 20),
                       Center(
-                        child: stackIndex < questionsList.length
-                            ? Stack(
-                                children: [
-                                  for (int i = stackIndex;
-                                      i < questionsList.length;
-                                      i++)
-                                    IgnorePointer(
-                                      ignoring: i != stackIndex,
-                                      child: Opacity(
-                                        opacity: i == stackIndex ? 1.0 : 0.0,
-                                        child: SizedBox(
-                                          width: 300,
-                                          height: 600,
-                                          child: appLib.createSwipingImageCard(
-                                            questionsList[i]['image'],
-                                            handleSwipe,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              )
-                            : SizedBox(),
-                      )
+                          child: Stack(
+                        children: [
+                          for (int i = stackIndex;
+                              i < questionsList.length;
+                              i++)
+                            IgnorePointer(
+                              ignoring: i != stackIndex,
+                              child: Opacity(
+                                opacity: i == stackIndex ? 1.0 : 0.0,
+                                child: SizedBox(
+                                  width: 300,
+                                  height: 600,
+                                  child: appLib.createSwipingImageCard(
+                                    questionsList[i]['image'],
+                                    handleSwipe,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ))
                     ]);
                   }
                 })));
@@ -691,7 +688,8 @@ class GiftsPageState extends State<GiftsPage> {
     };
     var fetchedRecommendationsList = await appReq.getRecommendations(entryDic);
     setState(() {
-      recommendationsList = fetchedRecommendationsList;
+      List recommendationsListOrginal = fetchedRecommendationsList;
+      recommendationsList = recommendationsListOrginal.getRange(0, 4).toList();
     });
 
     print(recommendationsList.length);
