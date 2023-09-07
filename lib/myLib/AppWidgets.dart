@@ -388,7 +388,7 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
           appLib.createSelectOption(
               _relationshipText,
               [
-                'Parents',
+                'Parent',
                 'Soulmate',
                 'Son/Daughter',
                 'Family',
@@ -404,11 +404,11 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
           appLib.createSelectOption(
               _ocassionText,
               [
-                'Holidays',
-                'BirthDay',
+                'Holiday',
+                'Birthday',
                 'Love YOU Gift',
                 'Thank YOU Gift',
-                'Graduations',
+                'Graduation',
                 'Other'
               ],
               selectedOcassion, (newOption) {
