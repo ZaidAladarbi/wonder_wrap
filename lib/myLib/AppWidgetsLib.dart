@@ -1,10 +1,6 @@
 // ignore_for_file: file_names, await_only_futures
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:typed_data';
-import 'dart:convert';
-import 'package:compute/compute.dart';
 
 import 'AppConstants.dart';
 
@@ -342,49 +338,32 @@ class AppLib {
   }
 
   // QuestionPage function
-  Widget decodePhoto(String base64EncodedImageString) {
-    Uint8List decodedImage = base64Decode(base64EncodedImageString);
-    return Image.memory(decodedImage);
-  }
-
-  Future<Uint8List> decodePhotoAsync(String base64EncodedImageString) async {
-    return await compute(base64Decode, base64EncodedImageString);
-  }
-
-  Widget createSwipingImageCard(
-      String base64EncodedImageString, Function(bool) handleSwipe) {
-    return FutureBuilder<Uint8List>(
-      future: decodePhotoAsync(base64EncodedImageString),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          return Container(
-            color: AppColors.backgroundColor,
-            width: SwipingCardsConstants.photoWidth,
-            height: SwipingCardsConstants.photoHeight,
-            child: Dismissible(
-              key: Key(base64EncodedImageString), // Unique key for the card
-              onDismissed: (direction) {
-                if (direction == DismissDirection.endToStart) {
-                  // Swiped to the left (dislike)
-                  handleSwipe(false);
-                } else if (direction == DismissDirection.startToEnd) {
-                  // Swiped to the right (like)
-                  handleSwipe(true);
-                }
-              },
-              child: Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: decodePhoto(base64EncodedImageString)),
+  Widget createSwipingImageCard(String imageUrl, Function(bool) handleSwipe) {
+    return Container(
+      color: AppColors.backgroundColor,
+      width: SwipingCardsConstants.photoWidth,
+      height: SwipingCardsConstants.photoHeight,
+      child: Dismissible(
+          key: Key(imageUrl), // Unique key for the card
+          onDismissed: (direction) {
+            if (direction == DismissDirection.endToStart) {
+              // Swiped to the left (dislike)
+              handleSwipe(false);
+            } else if (direction == DismissDirection.startToEnd) {
+              // Swiped to the right (like)
+              handleSwipe(true);
+            }
+          },
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
+            child: Image.network(
+              imageUrl,
+              scale: 1,
+            ),
+          )),
     );
   }
 

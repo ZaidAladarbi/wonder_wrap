@@ -287,15 +287,12 @@ class GifteePageState extends State<GifteePage> {
   void _handleButton() async {
     double entry_id = EntryManager().entryid;
     String token = TokenManager().token;
-    print(entry_id);
-    print(token);
-    print(selectedAge);
-    print(selectedGender);
+
     await appReq.postRequest(
         '/set_age/', token, {'entry_id': entry_id, 'age': selectedAge.toInt()});
-    print('eoiontos');
     await appReq.postRequest('/set_gender/', token,
         {'entry_id': entry_id, 'gender': selectedGender});
+
     print('giftee button handled');
     Navigator.push(
       context,
@@ -575,11 +572,13 @@ class QuestionPageState extends State<QuestionPage> {
   }
 
   Future<void> fetchQuestions() async {
+    print('question request started');
     var fetchedQuestionsList =
         await appReq.getQuestions(token, entry_id, n_questions);
     setState(() {
       questionsList = fetchedQuestionsList;
     });
+    print('questions saved');
   }
 
   void handleSwipe(bool like) {
@@ -922,5 +921,26 @@ class HistoryPageState extends State<HistoryPage> {
                 );
               }
             }));
+  }
+}
+
+class TestPage extends StatefulWidget {
+  @override
+  TestPageState createState() => TestPageState();
+}
+
+class TestPageState extends State<TestPage> {
+  String token = TokenManager().token;
+  double entry_id = EntryManager().entryid;
+
+  @override
+  Widget build(BuildContext context) {
+    return appLib.createPage(
+      context,
+      appLib.createColumn([
+        Image.network(
+            'https://nyc3.digitaloceanspaces.com/betagift/media/images/giphtrump.gif?AWSAccessKeyId=DO00VBCNQTHDQG7MFUA4&Signature=VS9RXf3dVaRHtD%2FCICRp9lVIHM8%3D&Expires=1694030070'),
+      ]),
+    );
   }
 }

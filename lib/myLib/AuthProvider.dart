@@ -24,7 +24,7 @@ class AuthProvider extends ChangeNotifier {
         final responseData = jsonDecode(response.body);
 
         TokenManager().token = responseData['token'];
-        print(token);
+        //print(token);
         print('Login successfully');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => GifteePage()));

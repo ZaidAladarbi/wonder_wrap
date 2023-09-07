@@ -30,7 +30,6 @@ class AppRequests {
       },
       body: jsonEncode(body),
     );
-    print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('request Posted successfully');
     } else {
