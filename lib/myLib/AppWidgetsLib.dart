@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, await_only_futures
 
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'AppConstants.dart';
 
@@ -357,11 +358,23 @@ class AppLib {
           child: Card(
             elevation: 5,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(30),
             ),
-            child: Image.network(
-              imageUrl,
-              scale: 1,
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(
+                  color: ButtonConstants.primaryButtonColor,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           )),
     );

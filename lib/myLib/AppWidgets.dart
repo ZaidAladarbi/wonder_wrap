@@ -631,31 +631,26 @@ class QuestionPageState extends State<QuestionPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    return appLib.createColumn([
-                      SizedBox(height: 20),
-                      Center(
-                          child: Stack(
-                        children: [
-                          for (int i = stackIndex;
-                              i < questionsList.length;
-                              i++)
-                            IgnorePointer(
-                              ignoring: i != stackIndex,
-                              child: Opacity(
-                                opacity: i == stackIndex ? 1.0 : 0.0,
-                                child: SizedBox(
-                                  width: 300,
-                                  height: 600,
-                                  child: appLib.createSwipingImageCard(
-                                    questionsList[i]['image'],
-                                    handleSwipe,
-                                  ),
+                    return Center(
+                        child: Stack(
+                      children: [
+                        for (int i = stackIndex; i < questionsList.length; i++)
+                          IgnorePointer(
+                            ignoring: i != stackIndex,
+                            child: Opacity(
+                              opacity: i == stackIndex ? 1.0 : 0.0,
+                              child: SizedBox(
+                                width: 300,
+                                height: 600,
+                                child: appLib.createSwipingImageCard(
+                                  questionsList[i]['image'],
+                                  handleSwipe,
                                 ),
                               ),
                             ),
-                        ],
-                      ))
-                    ]);
+                          ),
+                      ],
+                    ));
                   }
                 })));
   }
@@ -672,6 +667,7 @@ class GiftsPageState extends State<GiftsPage> {
   List recommendationsList = [];
   List<String> giftNames = [];
   List<String> giftUrls = [];
+  List<String> giftImage = [];
   late final Future myFuture;
 
   @override
@@ -697,6 +693,7 @@ class GiftsPageState extends State<GiftsPage> {
     setState(() {
       giftNames = dic['giftNames'];
       giftUrls = dic['giftUrls'];
+      giftImage = dic['giftImage'];
     });
   }
 
@@ -704,8 +701,13 @@ class GiftsPageState extends State<GiftsPage> {
     for (int i = 0; i < recommendationsList.length; i++) {
       giftNames.add(recommendationsList[i]['name']);
       giftUrls.add(recommendationsList[i]['url']);
+      giftImage.add(recommendationsList[i]['img_url']);
     }
-    return {'giftNames': giftNames, 'giftUrls': giftUrls};
+    return {
+      'giftNames': giftNames,
+      'giftUrls': giftUrls,
+      'giftImage': giftImage
+    };
   }
 
   @override
