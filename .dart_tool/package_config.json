@@ -320,6 +320,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "swipe_widget",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/swipe_widget-0.0.2+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
       "name": "synchronized",
       "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/synchronized-3.1.0",
       "packageUri": "lib/",
@@ -422,7 +428,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-07T18:37:15.958158Z",
+  "generated": "2023-09-12T05:01:51.733937Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }

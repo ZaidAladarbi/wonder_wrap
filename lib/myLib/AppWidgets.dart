@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:swipe_widget/swipe_widget.dart';
 
 import 'package:wonder_wrap/myLib/AppRequestsLib.dart';
 import 'TokenManager.dart';
@@ -19,6 +21,8 @@ String appUrl = AppConstants.appUrl;
 
 String token = TokenManager().token;
 double entry_id = EntryManager().entryid;
+
+ValueNotifier<bool> likedNotifier = ValueNotifier<bool>(false);
 
 Map<String, dynamic> entryDic = {'entry_id': entry_id, 'answers': answersList};
 
@@ -321,7 +325,7 @@ class GifteePageState extends State<GifteePage> {
             });
           }),
           SizedBox(height: 10),
-          appLib.createMultiButton('Prefare not to answer', selectedGender,
+          appLib.createMultiButton('Prefer not to answer', selectedGender,
               (newGender) {
             setState(() {
               selectedGender = newGender;
@@ -560,6 +564,8 @@ class QuestionPage extends StatefulWidget {
 class QuestionPageState extends State<QuestionPage> {
   int stackIndex = 0;
   int n_questions = 15;
+  bool liked = false;
+
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
   Map<String, String> getQuestionsDic = {};
@@ -581,7 +587,32 @@ class QuestionPageState extends State<QuestionPage> {
     print('questions saved');
   }
 
-  void handleSwipe(bool like) {
+  Widget insertLikedState(bool liked) {
+    if (liked) {
+      return Center(
+        child: SizedBox(
+          height: 300,
+          child: Image.asset(
+            "/Users/admin/Desktop/Development/wonder_wrap/images/Liked.png",
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: SizedBox(
+          height: 300,
+          child: Image.asset(
+            "/Users/admin/Desktop/Development/wonder_wrap/images/unLiked.png",
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+  }
+
+  dynamic handleSwipe(bool like) {
+    print('handle swipe started');
     setState(() {
       String questionId = questionsList[stackIndex]['id'].toString();
       String answer = like ? 'yes' : 'no';
@@ -602,6 +633,7 @@ class QuestionPageState extends State<QuestionPage> {
           answersList = answersList;
         });
         print('answers saved');
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => GiftsPage()),
@@ -609,6 +641,87 @@ class QuestionPageState extends State<QuestionPage> {
         print('navigated to gifts page');
       }
     });
+    print('swipeHandeled');
+  }
+
+  Widget createSwipingImageCard(String imageUrl, Function(bool) handleSwipe) {
+    return Container(
+        color: AppColors.backgroundColor,
+        width: SwipingCardsConstants.photoWidth,
+        height: SwipingCardsConstants.photoHeight,
+        child: ValueListenableBuilder<bool>(
+            valueListenable: likedNotifier,
+            builder: (context, isLiked, child) {
+              return SwipeWidget(
+                distance: 0.5,
+
+                onSwipe: () {
+                  print('Swiped!');
+                  //Future.delayed(const Duration(milliseconds: 300), () => setState(() {}));
+                },
+                onSwipeRight: () {
+                  print('swiped right');
+                  setState(() {
+                    liked = true;
+                  });
+                  handleSwipe(liked);
+                },
+                onSwipeLeft: () {
+                  print('swiped left');
+                  setState(() {
+                    liked = false;
+                  });
+                  handleSwipe(liked);
+                },
+                //onUpdate: (distance) => print('The distance of the swipe is $distance (from 0 to 1)'),
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => Center(
+                      child: appLib.createColumn(
+                        [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  width: 150,
+                                  child: appLib.insertPhoto(
+                                      path:
+                                          '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: 70,
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 150,
+                                  child: appLib.insertPhoto(
+                                      path:
+                                          '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
+                                ),
+                              ]),
+                        ],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              );
+            }));
   }
 
   @override
@@ -631,10 +744,10 @@ class QuestionPageState extends State<QuestionPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    return Center(
-                        child: Stack(
+                    return IndexedStack(
+                      index: stackIndex,
                       children: [
-                        for (int i = stackIndex; i < questionsList.length; i++)
+                        for (int i = 0; i < questionsList.length; i++)
                           IgnorePointer(
                             ignoring: i != stackIndex,
                             child: Opacity(
@@ -642,7 +755,7 @@ class QuestionPageState extends State<QuestionPage> {
                               child: SizedBox(
                                 width: 300,
                                 height: 600,
-                                child: appLib.createSwipingImageCard(
+                                child: createSwipingImageCard(
                                   questionsList[i]['image'],
                                   handleSwipe,
                                 ),
@@ -650,7 +763,7 @@ class QuestionPageState extends State<QuestionPage> {
                             ),
                           ),
                       ],
-                    ));
+                    );
                   }
                 })));
   }
@@ -735,17 +848,25 @@ class GiftsPageState extends State<GiftsPage> {
                       height: AppConstants.pageHeight,
                       child: Column(children: [
                         SizedBox(
-                          width: 150,
-                          height: 30,
+                          height: 25,
+                        ),
+                        SizedBox(
+                          width: 120,
+                          child: appLib.insertPhoto(
+                              path:
+                                  '/Users/admin/Desktop/Development/wonder_wrap/images/LogoTheAIHasChosenYourGift.png'),
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
                         SizedBox(
                           width: 275,
                           child: appLib.insertPhoto(
                               path:
-                                  '/Users/admin/Desktop/Development/wonder_wrap/images/TheAIHasChosenYourGift.png'),
+                                  '/Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png'),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 10,
                         ),
                         Expanded(
                             child: ListView.builder(

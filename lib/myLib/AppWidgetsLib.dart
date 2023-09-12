@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, await_only_futures
 
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'AppConstants.dart';
 
@@ -335,48 +334,6 @@ class AppLib {
           },
         ),
       ]),
-    );
-  }
-
-  // QuestionPage function
-  Widget createSwipingImageCard(String imageUrl, Function(bool) handleSwipe) {
-    return Container(
-      color: AppColors.backgroundColor,
-      width: SwipingCardsConstants.photoWidth,
-      height: SwipingCardsConstants.photoHeight,
-      child: Dismissible(
-          key: Key(imageUrl), // Unique key for the card
-          onDismissed: (direction) {
-            if (direction == DismissDirection.endToStart) {
-              // Swiped to the left (dislike)
-              handleSwipe(false);
-            } else if (direction == DismissDirection.startToEnd) {
-              // Swiped to the right (like)
-              handleSwipe(true);
-            }
-          },
-          child: Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                  ),
-                ),
-              ),
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(
-                  color: ButtonConstants.primaryButtonColor,
-                ),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-          )),
     );
   }
 
