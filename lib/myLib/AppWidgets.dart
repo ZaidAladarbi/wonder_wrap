@@ -827,7 +827,6 @@ class QuestionPageState extends State<QuestionPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    print('started:');
                     return Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -953,26 +952,37 @@ class GiftsPageState extends State<GiftsPage> {
                       width: AppConstants.pageWidth,
                       height: AppConstants.pageHeight,
                       child: Column(children: [
-                        SizedBox(
-                          height: 25,
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: appLib.insertPhoto(
-                              path:
-                                  '/Users/admin/Desktop/Development/wonder_wrap/images/LogoTheAIHasChosenYourGift.png'),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        SizedBox(
-                          width: 275,
-                          child: appLib.insertPhoto(
-                              path:
-                                  '/Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png'),
-                        ),
-                        SizedBox(
-                          height: 25,
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => StartingPage()),
+                            );
+                          },
+                          child: Column(children: [
+                            SizedBox(
+                              height: 25,
+                            ),
+                            SizedBox(
+                              width: 120,
+                              child: appLib.insertPhoto(
+                                  path:
+                                      '/Users/admin/Desktop/Development/wonder_wrap/images/LogoTheAIHasChosenYourGift.png'),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            SizedBox(
+                              width: 275,
+                              child: appLib.insertPhoto(
+                                  path:
+                                      '/Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png'),
+                            ),
+                            SizedBox(
+                              height: 25,
+                            ),
+                          ]),
                         ),
                         SizedBox(
                             width: 300,
@@ -1057,8 +1067,7 @@ class GiftsPageState extends State<GiftsPage> {
                           ),
                         ),*/
                         Expanded(child: SizedBox()),
-                        appLib.createButton(
-                            'Go to My Gifts', HistoryPage(), context),
+                        appLib.createButton('My Gifts', HistoryPage(), context),
                         SizedBox(
                           height: 20,
                         ),
