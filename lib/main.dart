@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'myLib/AuthProvider.dart';
 import 'myLib/AppWidgets.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferences.getInstance();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AuthProvider(),

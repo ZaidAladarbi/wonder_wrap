@@ -152,6 +152,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "mime",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/mime-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "nested",
       "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/nested-1.0.0",
       "packageUri": "lib/",
@@ -230,6 +236,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "share",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/share-2.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "shared_preferences",
       "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/shared_preferences-2.2.1",
       "packageUri": "lib/",
@@ -276,6 +288,12 @@
       "rootUri": "file:///Users/admin/Desktop/Development/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "smooth_page_indicator",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/smooth_page_indicator-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "source_span",
@@ -411,9 +429,9 @@
     },
     {
       "name": "win32",
-      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/win32-5.0.7",
+      "rootUri": "file:///Users/admin/.pub-cache/hosted/pub.dev/win32-3.1.4",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "2.17"
     },
     {
       "name": "xdg_directories",
@@ -428,7 +446,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-12T05:01:51.733937Z",
+  "generated": "2023-09-13T21:18:56.496214Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }

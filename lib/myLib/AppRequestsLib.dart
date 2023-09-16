@@ -2,8 +2,9 @@
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:wonder_wrap/myLib/AppConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'AppConstants.dart';
 import 'TokenManager.dart';
 
 class AppRequests {
@@ -121,5 +122,24 @@ class AppRequests {
       print('Failed to get history. Status code: ${response.statusCode}');
     }
     return responseDic;
+  }
+}
+
+class KeepLogin {
+  Future<void> storeToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('authToken', token);
+    print('This token stored: $token');
+  }
+
+  Future<bool> isUserAuthenticated() async {
+    final prefs = await SharedPreferences.getInstance();
+    final authToken = prefs.getString('authToken');
+    print('The stored Token is:$authToken');
+
+    if (authToken != null) {
+      TokenManager().token = authToken;
+    }
+    return authToken != null;
   }
 }

@@ -5,8 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipe_widget/swipe_widget.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+//import 'package:share/share.dart';
 
-import 'package:wonder_wrap/myLib/AppRequestsLib.dart';
+import 'AppRequestsLib.dart';
 import 'TokenManager.dart';
 import 'AuthProvider.dart';
 import 'RegisterProvider.dart';
@@ -16,6 +18,7 @@ import 'AppConstants.dart';
 AppLib appLib = AppLib();
 AppRequests appReq = AppRequests();
 RegisterationProvider regProvider = RegisterationProvider();
+KeepLogin kpLog = KeepLogin();
 
 String appUrl = AppConstants.appUrl;
 
@@ -42,6 +45,62 @@ class StartingPage extends StatefulWidget {
 class StartingPageState extends State<StartingPage> {
   final String _buttonText = 'Get Started';
 
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void handleStart() async {
+    if (await kpLog.isUserAuthenticated()) {
+      print('Usual user');
+      appReq.createEntry(token, entryDic, entry_id);
+    } else {
+      print('New user');
+      await _guestSignInAndNavigate(context);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GifteePage()),
+    );
+  }
+
+  Future<void> _guestSignInAndNavigate(BuildContext context) async {
+    await AuthProvider().handleGuestSignIn(
+      context,
+      emailController,
+      passwordController,
+    );
+  }
+
+  Widget createStartButton(
+    String text,
+    BuildContext context, {
+    double height = ButtonConstants.buttonHeight,
+    double width = ButtonConstants.buttonWidth,
+    Color buttonColor = ButtonConstants.primaryButtonColor,
+    Color textColor = AppColors.primaryTextColor,
+    Color borderColor = ButtonConstants.primaryButtonColor,
+  }) {
+    return SizedBox(
+        width: width,
+        height: height,
+        child: TextButton(
+            style: TextButton.styleFrom(
+              elevation: 2,
+              backgroundColor: buttonColor,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: borderColor,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              handleStart();
+            },
+            child: appLib.createRichText(text, textColor: textColor)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return appLib.createPage(
@@ -53,11 +112,12 @@ class StartingPageState extends State<StartingPage> {
                   path:
                       '/Users/admin/Desktop/Development/wonder_wrap/images/Starting.png')),
           SizedBox(height: 70),
-          appLib.createButton(_buttonText, SignInPage(), context),
+          createStartButton(_buttonText, context),
+          //appLib.createButton(_buttonText, SignInPage(), context),
         ]));
   }
 }
-
+/*
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
@@ -273,6 +333,7 @@ class SignUpPageState extends State<SignUpPage> {
         ]));
   }
 }
+*/
 
 class GifteePage extends StatefulWidget {
   const GifteePage({Key? key}) : super(key: key);
@@ -292,17 +353,21 @@ class GifteePageState extends State<GifteePage> {
     double entry_id = EntryManager().entryid;
     String token = TokenManager().token;
 
-    await appReq.postRequest(
-        '/set_age/', token, {'entry_id': entry_id, 'age': selectedAge.toInt()});
-    await appReq.postRequest('/set_gender/', token,
-        {'entry_id': entry_id, 'gender': selectedGender});
+    if (selectedAge != 0 && selectedGender != '') {
+      await appReq.postRequest('/set_age/', token,
+          {'entry_id': entry_id, 'age': selectedAge.toInt()});
+      await appReq.postRequest('/set_gender/', token,
+          {'entry_id': entry_id, 'gender': selectedGender});
 
-    print('giftee button handled');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RelationAndOcassionPage()),
-    );
-    print('navigated to relation and occassions page');
+      print('giftee button handled');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RelationAndOcassionPage()),
+      );
+      print('navigated to relation and occassions page');
+    } else {
+      print('Select values');
+    }
   }
 
   @override
@@ -367,18 +432,22 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
   void handleButton() {
     String token = TokenManager().token;
     double entry_id = EntryManager().entryid;
-    appReq.postRequest('/set_relationship_occasion/', token, {
-      'entry_id': entry_id,
-      'relationship': selectedRelation,
-      'occasion': selectedOcassion
-    });
-    // Do something
-    print('relation and occasion button handled');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PriceRangePage()),
-    );
-    print('navidated to price range page');
+
+    if (selectedRelation != '' && selectedOcassion != '') {
+      appReq.postRequest('/set_relationship_occasion/', token, {
+        'entry_id': entry_id,
+        'relationship': selectedRelation,
+        'occasion': selectedOcassion
+      });
+      print('relation and occasion button handled');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PriceRangePage()),
+      );
+      print('navidated to price range page');
+    } else {
+      print('Select values');
+    }
   }
 
   @override
@@ -444,7 +513,7 @@ class PriceRangePageState extends State<PriceRangePage> {
   double min_price = 0;
   double max_price = 0;
 
-  String selectedPriceRange = "";
+  String selectedPriceRange = "\$0 - \$0";
 
   void onTap(index) {
     setState(() {
@@ -467,23 +536,32 @@ class PriceRangePageState extends State<PriceRangePage> {
       String selectedPriceRange, double min_price, double max_price) {
     List priceList =
         selectedPriceRange.replaceAll(RegExp(r'\$'), '').split(' - ');
-    min_price = double.parse(priceList[0]);
-    max_price = double.parse(priceList[1]);
-    return [min_price, max_price];
+    if (priceList[0] != 0 && priceList[1] != 0) {
+      min_price = double.parse(priceList[0]);
+      max_price = double.parse(priceList[1]);
+      return [min_price, max_price];
+    } else {
+      return [0, 0];
+    }
   }
 
   void handleButton() {
     String token = TokenManager().token;
     double entry_id = EntryManager().entryid;
+
     List price = min_max_price(selectedPriceRange, min_price, max_price);
-    appReq.postRequest('/set_min_max_price/', token,
-        {'entry_id': entry_id, 'min_price': price[0], 'max_price': price[1]});
-    print('price button handled');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => QuestionPage()),
-    );
-    print('navigated to questions page');
+    if (price[0] != 0 && price[1] != 0) {
+      appReq.postRequest('/set_min_max_price/', token,
+          {'entry_id': entry_id, 'min_price': price[0], 'max_price': price[1]});
+      print('price button handled');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => QuestionPage()),
+      );
+      print('navigated to questions page');
+    } else {
+      print('Select values');
+    }
   }
 
   @override
@@ -612,7 +690,6 @@ class QuestionPageState extends State<QuestionPage> {
   }
 
   dynamic handleSwipe(bool like) {
-    print('handle swipe started');
     setState(() {
       String questionId = questionsList[stackIndex]['id'].toString();
       String answer = like ? 'yes' : 'no';
@@ -644,7 +721,8 @@ class QuestionPageState extends State<QuestionPage> {
     print('swipeHandeled');
   }
 
-  Widget createSwipingImageCard(String imageUrl, Function(bool) handleSwipe) {
+  Widget createSwipingImageCard(
+      String imageUrl, int i, Function(bool) handleSwipe) {
     return Container(
         color: AppColors.backgroundColor,
         width: SwipingCardsConstants.photoWidth,
@@ -653,12 +731,7 @@ class QuestionPageState extends State<QuestionPage> {
             valueListenable: likedNotifier,
             builder: (context, isLiked, child) {
               return SwipeWidget(
-                distance: 0.5,
-
-                onSwipe: () {
-                  print('Swiped!');
-                  //Future.delayed(const Duration(milliseconds: 300), () => setState(() {}));
-                },
+                //onSwipe: () {print('Swiped!');},
                 onSwipeRight: () {
                   print('swiped right');
                   setState(() {
@@ -673,7 +746,6 @@ class QuestionPageState extends State<QuestionPage> {
                   });
                   handleSwipe(liked);
                 },
-                //onUpdate: (distance) => print('The distance of the swipe is $distance (from 0 to 1)'),
                 child: Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
@@ -688,35 +760,45 @@ class QuestionPageState extends State<QuestionPage> {
                         ),
                       ),
                     ),
-                    placeholder: (context, url) => Center(
-                      child: appLib.createColumn(
-                        [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                SizedBox(
-                                  width: 150,
-                                  child: appLib.insertPhoto(
-                                      path:
-                                          '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
-                                ),
-                              ]),
-                          SizedBox(
-                            height: 70,
+                    placeholder: (context, url) {
+                      if (i == 0) {
+                        return Center(
+                          child: appLib.createColumn(
+                            [
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    SizedBox(
+                                      width: 150,
+                                      child: appLib.insertPhoto(
+                                          path:
+                                              '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
+                                    ),
+                                  ]),
+                              SizedBox(
+                                height: 70,
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 150,
+                                      child: appLib.insertPhoto(
+                                          path:
+                                              '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
+                                    ),
+                                  ]),
+                            ],
                           ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: 150,
-                                  child: appLib.insertPhoto(
-                                      path:
-                                          '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
-                                ),
-                              ]),
-                        ],
-                      ),
-                    ),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: ButtonConstants.primaryButtonColor,
+                          ),
+                        );
+                      }
+                    },
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -744,26 +826,43 @@ class QuestionPageState extends State<QuestionPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    return IndexedStack(
-                      index: stackIndex,
-                      children: [
-                        for (int i = 0; i < questionsList.length; i++)
-                          IgnorePointer(
-                            ignoring: i != stackIndex,
-                            child: Opacity(
-                              opacity: i == stackIndex ? 1.0 : 0.0,
-                              child: SizedBox(
-                                width: 300,
-                                height: 600,
-                                child: createSwipingImageCard(
-                                  questionsList[i]['image'],
-                                  handleSwipe,
-                                ),
-                              ),
-                            ),
+                    return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 230,
+                            height: 20,
+                            child: Column(children: [
+                              LinearProgressIndicator(
+                                  value: (stackIndex + 1) / n_questions,
+                                  backgroundColor: Colors.deepOrange[50],
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      SliderConstants.sliderActiveColor)),
+                            ]),
                           ),
-                      ],
-                    );
+                          IndexedStack(
+                            index: stackIndex,
+                            children: [
+                              for (int i = 0; i < questionsList.length; i++)
+                                IgnorePointer(
+                                  ignoring: i != stackIndex,
+                                  child: Opacity(
+                                    opacity: i == stackIndex ? 1.0 : 0.0,
+                                    child: SizedBox(
+                                      width: 300,
+                                      height: 600,
+                                      child: createSwipingImageCard(
+                                        questionsList[i]['image'],
+                                        i,
+                                        handleSwipe,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          )
+                        ]);
                   }
                 })));
   }
@@ -777,10 +876,13 @@ class GiftsPage extends StatefulWidget {
 class GiftsPageState extends State<GiftsPage> {
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
+  final _pageController = PageController(
+    initialPage: 0,
+  );
   List recommendationsList = [];
   List<String> giftNames = [];
   List<String> giftUrls = [];
-  List<String> giftImage = [];
+  List<String> giftImages = [];
   late final Future myFuture;
 
   @override
@@ -806,7 +908,7 @@ class GiftsPageState extends State<GiftsPage> {
     setState(() {
       giftNames = dic['giftNames'];
       giftUrls = dic['giftUrls'];
-      giftImage = dic['giftImage'];
+      giftImages = dic['giftImage'];
     });
   }
 
@@ -814,12 +916,12 @@ class GiftsPageState extends State<GiftsPage> {
     for (int i = 0; i < recommendationsList.length; i++) {
       giftNames.add(recommendationsList[i]['name']);
       giftUrls.add(recommendationsList[i]['url']);
-      giftImage.add(recommendationsList[i]['img_url']);
+      giftImages.add(recommendationsList[i]['img_url']);
     }
     return {
       'giftNames': giftNames,
       'giftUrls': giftUrls,
-      'giftImage': giftImage
+      'giftImage': giftImages
     };
   }
 
@@ -866,39 +968,91 @@ class GiftsPageState extends State<GiftsPage> {
                                   '/Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png'),
                         ),
                         SizedBox(
+                          height: 25,
+                        ),
+                        SizedBox(
+                            width: 300,
+                            height: 300,
+                            child: PageView.builder(
+                                controller: _pageController,
+                                itemCount: giftNames.length,
+                                itemBuilder: (context, index) {
+                                  //final giftName = giftNames[index];
+                                  final giftUrl = giftUrls[index];
+                                  final giftImage = giftImages[index];
+
+                                  return GestureDetector(
+                                      onTap: () async {
+                                        if (await canLaunchUrl(
+                                            Uri.parse(giftUrl))) {
+                                          await launchUrl(Uri.parse(giftUrl));
+                                        } else {
+                                          print('Could not launch gift $index');
+                                        }
+                                      },
+                                      child: Card(
+                                        elevation: 5,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: giftImage,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator(
+                                              color: ButtonConstants
+                                                  .primaryButtonColor,
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      ));
+                                })),
+                        SizedBox(
                           height: 10,
                         ),
-                        Expanded(
-                            child: ListView.builder(
-                          itemCount: giftNames.length,
-                          itemBuilder: (context, index) {
-                            final giftName = giftNames[index];
-                            final giftUrl = giftUrls[index];
-
-                            return Card(
-                                child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: ButtonConstants.primaryButtonColor,
-                                    width: 3),
-                                borderRadius: BorderRadius.circular(5),
+                        SmoothPageIndicator(
+                            controller: _pageController,
+                            count: giftImages.length,
+                            effect: WormEffect(
+                                activeDotColor:
+                                    ButtonConstants.primaryButtonColor),
+                            onDotClicked: (index) {}),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        /*Material(
+                          color: Colors.white,
+                          child: Center(
+                            child: Ink(
+                              decoration: const ShapeDecoration(
+                                color: ButtonConstants.primaryButtonColor,
+                                shape: CircleBorder(),
                               ),
-                              leading: CircleAvatar(
-                                backgroundColor:
-                                    ButtonConstants.primaryButtonColor,
+                              child: Center(
+                                child: IconButton(
+                                  icon: const Icon(Icons.share),
+                                  color: ButtonConstants.secondaryButtonColor,
+                                  onPressed: () {
+                                    int pageNum = _pageController.page!.round();
+                                    Share.share(giftUrls[pageNum]);
+                                  },
+                                ),
                               ),
-                              title: appLib.createRichText(giftName,
-                                  bold: true, fontFamily: 'cabin'),
-                              onTap: () async {
-                                if (await canLaunchUrl(Uri.parse(giftUrl))) {
-                                  await launchUrl(Uri.parse(giftUrl));
-                                } else {
-                                  print('Could not launch gift $index');
-                                }
-                              },
-                            ));
-                          },
-                        )),
+                            ),
+                          ),
+                        ),*/
+                        Expanded(child: SizedBox()),
                         appLib.createButton(
                             'Go to Cart', HistoryPage(), context),
                         SizedBox(
@@ -1061,8 +1215,27 @@ class TestPageState extends State<TestPage> {
     return appLib.createPage(
       context,
       appLib.createColumn([
-        Image.network(
-            'https://nyc3.digitaloceanspaces.com/betagift/media/images/giphtrump.gif?AWSAccessKeyId=DO00VBCNQTHDQG7MFUA4&Signature=VS9RXf3dVaRHtD%2FCICRp9lVIHM8%3D&Expires=1694030070'),
+        Material(
+          color: Colors.white,
+          child: Center(
+            child: Ink(
+              decoration: const ShapeDecoration(
+                color: ButtonConstants.primaryButtonColor,
+                shape: CircleBorder(),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: const Icon(Icons.share),
+                  color: ButtonConstants.secondaryButtonColor,
+                  onPressed: () {
+                    //int pageNum = _pageController.page!.round();
+                    //Share.share(giftUrls[pageNum]);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
       ]),
     );
   }

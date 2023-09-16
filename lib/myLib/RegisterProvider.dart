@@ -9,6 +9,7 @@ import 'AppWidgets.dart';
 import 'AppConstants.dart';
 
 AppRequests appReq = AppRequests();
+KeepLogin kpLog = KeepLogin();
 
 class RegisterationProvider extends ChangeNotifier {
   String appUrl = AppConstants.appUrl;
@@ -25,6 +26,12 @@ class RegisterationProvider extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         TokenManager().token = responseData["token"];
+        //print(token);
+
+        if (TokenManager().token != '') {
+          await kpLog.storeToken(TokenManager().token);
+        }
+
         print('Registration successful');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => GifteePage()));

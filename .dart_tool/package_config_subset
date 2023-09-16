@@ -86,6 +86,10 @@ meta
 2.12
 file:///Users/admin/.pub-cache/hosted/pub.dev/meta-1.9.1/
 file:///Users/admin/.pub-cache/hosted/pub.dev/meta-1.9.1/lib/
+mime
+2.18
+file:///Users/admin/.pub-cache/hosted/pub.dev/mime-1.0.4/
+file:///Users/admin/.pub-cache/hosted/pub.dev/mime-1.0.4/lib/
 nested
 2.12
 file:///Users/admin/.pub-cache/hosted/pub.dev/nested-1.0.0/
@@ -138,6 +142,10 @@ rxdart
 2.12
 file:///Users/admin/.pub-cache/hosted/pub.dev/rxdart-0.27.7/
 file:///Users/admin/.pub-cache/hosted/pub.dev/rxdart-0.27.7/lib/
+share
+2.12
+file:///Users/admin/.pub-cache/hosted/pub.dev/share-2.0.4/
+file:///Users/admin/.pub-cache/hosted/pub.dev/share-2.0.4/lib/
 shared_preferences
 2.19
 file:///Users/admin/.pub-cache/hosted/pub.dev/shared_preferences-2.2.1/
@@ -166,6 +174,10 @@ shared_preferences_windows
 2.19
 file:///Users/admin/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.1/
 file:///Users/admin/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.1/lib/
+smooth_page_indicator
+2.12
+file:///Users/admin/.pub-cache/hosted/pub.dev/smooth_page_indicator-1.1.0/
+file:///Users/admin/.pub-cache/hosted/pub.dev/smooth_page_indicator-1.1.0/lib/
 source_span
 2.14
 file:///Users/admin/.pub-cache/hosted/pub.dev/source_span-1.9.1/
@@ -255,9 +267,9 @@ vector_math
 file:///Users/admin/.pub-cache/hosted/pub.dev/vector_math-2.1.4/
 file:///Users/admin/.pub-cache/hosted/pub.dev/vector_math-2.1.4/lib/
 win32
-3.0
-file:///Users/admin/.pub-cache/hosted/pub.dev/win32-5.0.7/
-file:///Users/admin/.pub-cache/hosted/pub.dev/win32-5.0.7/lib/
+2.17
+file:///Users/admin/.pub-cache/hosted/pub.dev/win32-3.1.4/
+file:///Users/admin/.pub-cache/hosted/pub.dev/win32-3.1.4/lib/
 xdg_directories
 2.19
 file:///Users/admin/.pub-cache/hosted/pub.dev/xdg_directories-1.0.3/

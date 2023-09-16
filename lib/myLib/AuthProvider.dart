@@ -10,6 +10,7 @@ import 'AppWidgets.dart';
 import 'AppConstants.dart';
 
 AppRequests appReq = AppRequests();
+KeepLogin kpLog = KeepLogin();
 
 class AuthProvider extends ChangeNotifier {
   String appUrl = AppConstants.appUrl;
@@ -25,9 +26,15 @@ class AuthProvider extends ChangeNotifier {
 
         TokenManager().token = responseData['token'];
         //print(token);
+
+        if (TokenManager().token != '') {
+          await kpLog.storeToken(TokenManager().token);
+        }
+
         print('Login successfully');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => GifteePage()));
+
         print('navigated to GifteePage Successfully');
         appReq.createEntry(token, entryDic, entry_id);
       } else {
@@ -66,6 +73,11 @@ class AuthProvider extends ChangeNotifier {
     });
     final responseData = jsonDecode(response.body);
     TokenManager().token = responseData['token'];
+
+    if (TokenManager().token != '') {
+      await kpLog.storeToken(TokenManager().token);
+    }
+
     appReq.createEntry(token, entryDic, entry_id);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => GifteePage()));

@@ -193,7 +193,7 @@ class AppLib {
   Widget createAgeSlider(double selectedAge, ValueChanged<double> onChanged,
       {double sliderWidth = SliderConstants.sliderWidth,
       Color sliderActiveColor = SliderConstants.sliderActiveColor,
-      Color sliderInactiveColor = SliderConstants.sliderInactiveColor,
+      //Color sliderInactiveColor = SliderConstants.sliderInactiveColor,
       Color thumbColor = SliderConstants.thumbColor,
       double trackThickness = 2}) {
     return SizedBox(

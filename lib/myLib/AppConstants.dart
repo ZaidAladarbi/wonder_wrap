@@ -2,8 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-
-
 class AppRatio {
   static const double widthRatio = 1.2;
   static const double heightRatio = 1;
@@ -28,7 +26,8 @@ class AppColors {
   static const Color primaryTextColor = ConstantColors.whiteColor;
   static const Color secondaryTextColor = ConstantColors.redColor;
   static const Color otherTextColor = Colors.black;
-  static Color backgroundColor = ConstantColors.whiteColor;//Colors.deepOrange[50]!;
+  static Color backgroundColor =
+      ConstantColors.whiteColor; //Colors.deepOrange[50]!;
 }
 
 class ButtonConstants {
@@ -42,7 +41,7 @@ class ButtonConstants {
 class TextFieldConstants {
   static const double textFieldWidth = 250 * AppRatio.widthRatio;
   static const double textFieldHeight = 50;
-  static const Color textFieldColor = Colors.grey;//ConstantColors.redColor;
+  static const Color textFieldColor = Colors.grey; //ConstantColors.redColor;
   static const Color textOfTextFieldColor = Colors.black;
 }
 
@@ -53,7 +52,7 @@ class DividerConstants {
 class SliderConstants {
   static const double sliderWidth = 250 * AppRatio.widthRatio;
   static const Color sliderActiveColor = ConstantColors.redColor;
-  static const Color sliderInactiveColor = ConstantColors.whiteColor;
+  //static const Color sliderInactiveColor = ConstantColors.whiteColor;
   static const Color thumbColor = ConstantColors.redColor;
 }
 
