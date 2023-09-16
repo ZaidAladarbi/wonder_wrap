@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipe_widget/swipe_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'LazyIndexedStack.dart';
 //import 'package:share/share.dart';
 
 import 'AppRequestsLib.dart';
@@ -826,6 +827,7 @@ class QuestionPageState extends State<QuestionPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
+                    print('started:');
                     return Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -841,7 +843,9 @@ class QuestionPageState extends State<QuestionPage> {
                                       SliderConstants.sliderActiveColor)),
                             ]),
                           ),
-                          IndexedStack(
+
+                          ///IndexedStack(
+                          LazyIndexedStack(
                             index: stackIndex,
                             children: [
                               for (int i = 0; i < questionsList.length; i++)
@@ -1054,7 +1058,7 @@ class GiftsPageState extends State<GiftsPage> {
                         ),*/
                         Expanded(child: SizedBox()),
                         appLib.createButton(
-                            'Go to Cart', HistoryPage(), context),
+                            'Go to My Gifts', HistoryPage(), context),
                         SizedBox(
                           height: 20,
                         ),
