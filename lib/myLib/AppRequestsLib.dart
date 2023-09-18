@@ -102,7 +102,7 @@ class AppRequests {
     return responseDic;
   }
 
-  Future<dynamic> getHistory() async {
+  Future<dynamic> getMyGifts() async {
     final url = '$appUrl/get_entries/';
 
     String token = TokenManager().token;

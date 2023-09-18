@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipe_widget/swipe_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'LazyIndexedStack.dart';
-//import 'package:share/share.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'AppRequestsLib.dart';
 import 'TokenManager.dart';
@@ -34,7 +34,7 @@ List answersList = [];
 List questionsList = [];
 
 Map<String, String> giftsDic = {};
-Map<String, String> historyDic = {};
+Map<String, String> MyGiftsDic = {};
 
 class StartingPage extends StatefulWidget {
   const StartingPage({Key? key}) : super(key: key);
@@ -719,7 +719,7 @@ class QuestionPageState extends State<QuestionPage> {
         print('navigated to gifts page');
       }
     });
-    print('swipeHandeled');
+    //print('swipeHandeled');
   }
 
   Widget createSwipingImageCard(
@@ -928,6 +928,14 @@ class GiftsPageState extends State<GiftsPage> {
     };
   }
 
+  Future<void> shareLink(Map data) async {
+    try {
+      await html.window.navigator.share(data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return appLib.createPage(
@@ -1045,29 +1053,46 @@ class GiftsPageState extends State<GiftsPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        /*Material(
-                          color: Colors.white,
-                          child: Center(
-                            child: Ink(
-                              decoration: const ShapeDecoration(
-                                color: ButtonConstants.primaryButtonColor,
-                                shape: CircleBorder(),
+                        Expanded(child: SizedBox()),
+                        Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              appLib.createButton(
+                                  'My Gifts', MyGiftsPage(), context,
+                                  width: ButtonConstants.buttonWidth * 0.75),
+                              SizedBox(
+                                width: 20,
                               ),
-                              child: Center(
-                                child: IconButton(
-                                  icon: const Icon(Icons.share),
-                                  color: ButtonConstants.secondaryButtonColor,
-                                  onPressed: () {
-                                    int pageNum = _pageController.page!.round();
-                                    Share.share(giftUrls[pageNum]);
-                                  },
+                              GestureDetector(
+                                onTap: () async {
+                                  int pageNum = _pageController.page!.round();
+                                  String giftUrl = giftUrls[pageNum];
+                                  String giftName = giftNames[pageNum];
+
+                                  var data = {
+                                    'title': giftName,
+                                    'Text': 'Your gift link',
+                                    'url': giftUrl,
+                                  };
+                                  shareLink(data);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                    color: ButtonConstants.primaryButtonColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.share,
+                                      color:
+                                          ButtonConstants.secondaryButtonColor,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),*/
-                        Expanded(child: SizedBox()),
-                        appLib.createButton('My Gifts', HistoryPage(), context),
+                            ]),
                         SizedBox(
                           height: 20,
                         ),
@@ -1078,64 +1103,81 @@ class GiftsPageState extends State<GiftsPage> {
   }
 }
 
-class HistoryPage extends StatefulWidget {
+class MyGiftsPage extends StatefulWidget {
   @override
-  HistoryPageState createState() => HistoryPageState();
+  MyGiftsPageState createState() => MyGiftsPageState();
 }
 
-class HistoryPageState extends State<HistoryPage> {
+class MyGiftsPageState extends State<MyGiftsPage> {
   String token = TokenManager().token;
   double entry_id = EntryManager().entryid;
-  List historyList = [];
+  List MyGiftsList = [];
   List<String> giftNames = [];
-  List<String> giftCreated = [];
+  List<String> giftsCreated = [];
   List<String> giftUrls = [];
+  List<String> giftImages = [];
+  List<int> giftsListLength = [];
+  final _pageController = PageController(
+    initialPage: 0,
+  );
   late final Future myFuture;
 
   @override
   void initState() {
     super.initState();
-    myFuture = fetchHistory();
+    myFuture = fetchMyGifts();
   }
 
-  Future<void> fetchHistory() async {
-    print('history started');
-    List fetchedHistoryList = await appReq.getHistory();
+  Future<void> fetchMyGifts() async {
+    print('MyGifts started');
+    List fetchedMyGiftsList = await appReq.getMyGifts();
     setState(() {
-      historyList = fetchedHistoryList;
+      MyGiftsList = fetchedMyGiftsList;
     });
 
-    var dic = tideNamesUrls(historyList);
+    var dic = tideNamesUrls(MyGiftsList);
     setState(() {
       giftNames = dic['giftNames'];
       giftUrls = dic['giftUrls'];
-      //giftCreated = dic['giftCreated'];
+      //giftsCreated = dic['giftsCreated'];
     });
 
     print(giftNames.length);
     print(giftUrls.length);
-    //print(giftCreated.length);
+    //print(giftsCreated.length);
   }
 
-  dynamic tideNamesUrls(var historyList) {
+  dynamic tideNamesUrls(var MyGiftsList) {
     print('tiding started');
-    for (int i = 0; i < historyList.length; i++) {
-      //giftCreated.add(historyList[i]['created']);
-      for (int j = 0; j < historyList[i]['gifts'].length; j++) {
-        giftNames.add(historyList[i]['gifts'][j]['name']);
-        giftUrls.add(historyList[i]['gifts'][j]['url']);
+    /*print(MyGiftsList);
+    print('\n||||||||||||\n');
+    print(MyGiftsList[1]);
+    print('\n222222222222\n');
+    print(MyGiftsList[1]['gifts']);
+    print('\n333333333333\n');
+    print('this');*/
+    for (int i = 0; i < MyGiftsList.length; i++) {
+      //print(MyGiftsList[i]['created']);
+      //giftsCreated.add(MyGiftsList[i]['created']);
+      giftsListLength.add(MyGiftsList[i]['gifts'].length);
+      for (int j = 0; j < MyGiftsList[i]['gifts'].length; j++) {
+        giftNames.add(MyGiftsList[i]['gifts'][j]['name']);
+        giftUrls.add(MyGiftsList[i]['gifts'][j]['url']);
+        giftImages.add(MyGiftsList[i]['gifts'][j]['img_url']);
       }
     }
 
     List giftNamesReversed = giftNames.reversed.toList();
     List giftUrlsReversed = giftUrls.reversed.toList();
-    //List giftCreatedReversed = giftCreated.reversed.toList();
+    List giftsCreatedReversed = giftsCreated.reversed.toList();
+    List giftImagesReversed = giftImages.reversed.toList();
 
     print('done tiding');
     return {
       'giftNames': giftNamesReversed,
       'giftUrls': giftUrlsReversed,
-      //'giftCreated': giftCreatedReversed
+      'giftsCreated': giftsCreatedReversed,
+      'giftImages': giftImagesReversed,
     };
   }
 
@@ -1170,14 +1212,67 @@ class HistoryPageState extends State<HistoryPage> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: giftNames.length,
+                        itemCount: giftsListLength.length,
                         itemBuilder: (context, index) {
-                          final giftName = giftNames[index];
-                          final giftUrl = giftUrls[index];
-
+                          //final giftCreated = giftsCreated[index];
+                          int giftListLength = giftsListLength[index];
                           return Column(children: [
-                            //if (index % 2 == 0) appLib.createRichText(giftCreated[(index ~/ 2)],bold: true),
-                            Card(
+                            //appLib.createRichText(giftCreated[index], bold: true),
+                            SizedBox(
+                              width: 250,
+                              height: 250,
+                              child: PageView.builder(
+                                  controller: _pageController,
+                                  itemCount: giftListLength,
+                                  itemBuilder: (context, indexPage) {
+                                    //final giftName = giftNames[index];
+                                    final giftUrl =
+                                        giftUrls[index * 4 + indexPage];
+                                    final giftImage =
+                                        giftImages[index * 4 + indexPage];
+
+                                    return GestureDetector(
+                                        onTap: () async {
+                                          if (await canLaunchUrl(
+                                              Uri.parse(giftUrl))) {
+                                            await launchUrl(Uri.parse(giftUrl));
+                                          } else {
+                                            int en = index * 4 + indexPage;
+                                            print('Could not launch gift $en');
+                                          }
+                                        },
+                                        child: Card(
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl: giftImage,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                ),
+                                              ),
+                                            ),
+                                            placeholder: (context, url) =>
+                                                Center(
+                                              child: CircularProgressIndicator(
+                                                color: ButtonConstants
+                                                    .primaryButtonColor,
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
+                                        ));
+                                  }),
+                            ),
+                            /*Card(
                               child: ListTile(
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
@@ -1199,7 +1294,7 @@ class HistoryPageState extends State<HistoryPage> {
                                   }
                                 },
                               ),
-                            ),
+                            ),*/
                           ]);
                         },
                       ),
