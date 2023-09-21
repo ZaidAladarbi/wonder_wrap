@@ -1139,38 +1139,32 @@ class MyGiftsPageState extends State<MyGiftsPage> {
     setState(() {
       giftNames = dic['giftNames'];
       giftUrls = dic['giftUrls'];
-      //giftsCreated = dic['giftsCreated'];
+      giftsCreated = dic['giftsCreated'];
+      giftImages = dic['giftImages'];
     });
-
-    print(giftNames.length);
-    print(giftUrls.length);
-    //print(giftsCreated.length);
+    print(giftsCreated);
   }
 
   dynamic tideNamesUrls(var MyGiftsList) {
     print('tiding started');
-    /*print(MyGiftsList);
-    print('\n||||||||||||\n');
-    print(MyGiftsList[1]);
-    print('\n222222222222\n');
-    print(MyGiftsList[1]['gifts']);
-    print('\n333333333333\n');
-    print('this');*/
+    List<String> _giftsCreated = [];
+    List<String> _giftNames = [];
+    List<String> _giftUrls = [];
+    List<String> _giftImages = [];
     for (int i = 0; i < MyGiftsList.length; i++) {
-      //print(MyGiftsList[i]['created']);
-      //giftsCreated.add(MyGiftsList[i]['created']);
+      _giftsCreated.add(MyGiftsList[i]['created'].substring(0, 10));
       giftsListLength.add(MyGiftsList[i]['gifts'].length);
       for (int j = 0; j < MyGiftsList[i]['gifts'].length; j++) {
-        giftNames.add(MyGiftsList[i]['gifts'][j]['name']);
-        giftUrls.add(MyGiftsList[i]['gifts'][j]['url']);
-        giftImages.add(MyGiftsList[i]['gifts'][j]['img_url']);
+        _giftNames.add(MyGiftsList[i]['gifts'][j]['name']);
+        _giftUrls.add(MyGiftsList[i]['gifts'][j]['url']);
+        _giftImages.add(MyGiftsList[i]['gifts'][j]['img_url']);
       }
     }
 
-    List giftNamesReversed = giftNames.reversed.toList();
-    List giftUrlsReversed = giftUrls.reversed.toList();
-    List giftsCreatedReversed = giftsCreated.reversed.toList();
-    List giftImagesReversed = giftImages.reversed.toList();
+    List giftNamesReversed = _giftNames.reversed.toList();
+    List giftUrlsReversed = _giftUrls.reversed.toList();
+    List giftsCreatedReversed = _giftsCreated.reversed.toList();
+    List giftImagesReversed = _giftImages.reversed.toList();
 
     print('done tiding');
     return {
@@ -1214,66 +1208,108 @@ class MyGiftsPageState extends State<MyGiftsPage> {
                       child: ListView.builder(
                         itemCount: giftsListLength.length,
                         itemBuilder: (context, index) {
-                          //final giftCreated = giftsCreated[index];
+                          final giftCreated = giftsCreated[index];
                           int giftListLength = giftsListLength[index];
-                          return Column(children: [
-                            //appLib.createRichText(giftCreated[index], bold: true),
-                            SizedBox(
-                              width: 250,
-                              height: 250,
-                              child: PageView.builder(
-                                  controller: _pageController,
-                                  itemCount: giftListLength,
-                                  itemBuilder: (context, indexPage) {
-                                    //final giftName = giftNames[index];
-                                    final giftUrl =
-                                        giftUrls[index * 4 + indexPage];
-                                    final giftImage =
-                                        giftImages[index * 4 + indexPage];
+                          return SizedBox(
+                            height: 325,
+                            child: Column(children: [
+                              if (index == 0 ||
+                                  giftCreated != giftsCreated[index - 1])
+                                Container(
+                                  margin: const EdgeInsets.all(5),
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Colors.grey[300]!,
+                                        width: 2.2,
+                                      ),
+                                    ),
+                                  ),
+                                  child: SizedBox(
+                                    width: 200,
+                                    child: Row(children: [
+                                      appLib.createRichText(giftCreated),
+                                    ]),
+                                  ),
+                                ),
+                              SizedBox(
+                                height: 275,
+                                child: Column(children: [
+                                  SizedBox(
+                                    width: 250,
+                                    height: 250,
+                                    child: PageView.builder(
+                                        controller: _pageController,
+                                        itemCount: giftListLength,
+                                        itemBuilder: (context, indexPage) {
+                                          final giftUrl =
+                                              giftUrls[index * 4 + indexPage];
+                                          final giftImage =
+                                              giftImages[index * 4 + indexPage];
 
-                                    return GestureDetector(
-                                        onTap: () async {
-                                          if (await canLaunchUrl(
-                                              Uri.parse(giftUrl))) {
-                                            await launchUrl(Uri.parse(giftUrl));
-                                          } else {
-                                            int en = index * 4 + indexPage;
-                                            print('Could not launch gift $en');
-                                          }
-                                        },
-                                        child: Card(
-                                          elevation: 5,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl: giftImage,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: imageProvider,
+                                          return GestureDetector(
+                                              onTap: () async {
+                                                if (await canLaunchUrl(
+                                                    Uri.parse(giftUrl))) {
+                                                  await launchUrl(
+                                                      Uri.parse(giftUrl));
+                                                } else {
+                                                  int en =
+                                                      index * 4 + indexPage;
+                                                  print(
+                                                      'Could not launch gift $en');
+                                                }
+                                              },
+                                              child: Card(
+                                                elevation: 5,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
                                                 ),
-                                              ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                Center(
-                                              child: CircularProgressIndicator(
-                                                color: ButtonConstants
-                                                    .primaryButtonColor,
-                                              ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
-                                          ),
-                                        ));
-                                  }),
-                            ),
-                            /*Card(
-                              child: ListTile(
+                                                child: CachedNetworkImage(
+                                                  imageUrl: giftImage,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: ButtonConstants
+                                                          .primaryButtonColor,
+                                                    ),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Icon(Icons.error),
+                                                ),
+                                              ));
+                                        }),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  SmoothPageIndicator(
+                                      controller: _pageController,
+                                      count: giftListLength,
+                                      effect: WormEffect(
+                                          activeDotColor: ButtonConstants
+                                              .primaryButtonColor),
+                                      onDotClicked: (pageIndex) {}),
+                                ]),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              /*Card(
+                              child: ListTile(x
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
                                       color: ButtonConstants.primaryButtonColor,
@@ -1295,13 +1331,11 @@ class MyGiftsPageState extends State<MyGiftsPage> {
                                 },
                               ),
                             ),*/
-                          ]);
+                            ]),
+                          );
                         },
                       ),
                     ),
-                    SizedBox(
-                      height: 50,
-                    )
                   ],
                 );
               }
