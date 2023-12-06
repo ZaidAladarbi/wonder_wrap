@@ -8,6 +8,7 @@ import 'package:swipe_widget/swipe_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'LazyIndexedStack.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:appinio_swiper/appinio_swiper.dart';
 
 import 'AppRequestsLib.dart';
 import 'TokenManager.dart';
@@ -344,11 +345,13 @@ class GifteePage extends StatefulWidget {
 }
 
 class GifteePageState extends State<GifteePage> {
-  final String _genderText = 'Gender of giftee';
+  final String _genderText = 'Giftee gender';
   final String _nextText = 'Next';
 
   String selectedGender = '';
   double selectedAge = 0;
+
+  ValueNotifier<bool> pressedNotifier = ValueNotifier<bool>(false);
 
   void _handleButton() async {
     double entry_id = EntryManager().entryid;
@@ -367,6 +370,8 @@ class GifteePageState extends State<GifteePage> {
       );
       print('navigated to relation and occassions page');
     } else {
+      pressedNotifier.value = true;
+
       print('Select values');
     }
   }
@@ -410,6 +415,26 @@ class GifteePageState extends State<GifteePage> {
             });
           }),
           SizedBox(height: 30),
+          ValueListenableBuilder<bool>(
+            valueListenable: pressedNotifier,
+            builder: (context, isPressed, child) {
+              return isPressed && (selectedAge == 0 || selectedGender == '')
+                  ? SizedBox(
+                      width: ButtonConstants.buttonWidth,
+                      child: Row(
+                        children: [
+                          appLib.createRichText(
+                            'Select Age and Gender values',
+                            textColor: Colors.red,
+                            fontSize: 10,
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox
+                      .shrink(); // Hide the widget if conditions are not met
+            },
+          ),
           appLib.createFunctionButton(_nextText, context, _handleButton),
         ]));
   }
@@ -430,6 +455,8 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
   String selectedRelation = '';
   String selectedOcassion = '';
 
+  ValueNotifier<bool> pressedNotifier = ValueNotifier<bool>(false);
+
   void handleButton() {
     String token = TokenManager().token;
     double entry_id = EntryManager().entryid;
@@ -443,10 +470,12 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
       print('relation and occasion button handled');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PriceRangePage()),
+        MaterialPageRoute(builder: (context) => EmotionFeelingPage()),
       );
-      print('navidated to price range page');
+      print('navidated to feeling page');
     } else {
+      pressedNotifier.value = true;
+
       print('Select values');
     }
   }
@@ -491,6 +520,113 @@ class RelationAndOcassionPageState extends State<RelationAndOcassionPage> {
             });
           }),
           SizedBox(height: 30),
+          ValueListenableBuilder<bool>(
+            valueListenable: pressedNotifier,
+            builder: (context, isPressed, child) {
+              return isPressed &&
+                      (selectedRelation == '' || selectedOcassion == '')
+                  ? SizedBox(
+                      width: ButtonConstants.buttonWidth,
+                      child: Row(
+                        children: [
+                          appLib.createRichText(
+                            'Select Relation and Occasion Values',
+                            textColor: Colors.red,
+                            fontSize: 10,
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox
+                      .shrink(); // Hide the widget if conditions are not met
+            },
+          ),
+          appLib.createFunctionButton(_continueText, context, handleButton),
+        ]));
+  }
+}
+
+class EmotionFeelingPage extends StatefulWidget {
+  const EmotionFeelingPage({Key? key}) : super(key: key);
+
+  @override
+  EmotionFeelingPageState createState() => EmotionFeelingPageState();
+}
+
+class EmotionFeelingPageState extends State<EmotionFeelingPage> {
+  final String _feelingText = 'How do you want the gift to feel?';
+  final String _continueText = 'Continue';
+
+  String selectedFeeling = '';
+
+  ValueNotifier<bool> pressedNotifier = ValueNotifier<bool>(false);
+
+  void handleButton() {
+    String token = TokenManager().token;
+    double entry_id = EntryManager().entryid;
+
+    if (selectedFeeling != '') {
+      appReq.postRequest('/set_feeling/', token, {
+        'entry_id': entry_id,
+        'feeling': selectedFeeling,
+      });
+      print('Feeling button handled');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PriceRangePage()),
+      );
+      print('navidated to price range page');
+    } else {
+      pressedNotifier.value = true;
+
+      print('Select values');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return appLib.createPage(
+        context,
+        appLib.createColumn([
+          SizedBox(
+            height: 20,
+          ),
+          appLib.createSelectOption(
+              _feelingText,
+              [
+                'Emotional',
+                'Funny',
+                'Cute',
+                'Surprising',
+                'Uplifting',
+                'Anything'
+              ],
+              selectedFeeling, (newOption) {
+            setState(() {
+              selectedFeeling = newOption;
+            });
+          }),
+          SizedBox(height: 100),
+          ValueListenableBuilder<bool>(
+            valueListenable: pressedNotifier,
+            builder: (context, isPressed, child) {
+              return isPressed && (selectedFeeling == '')
+                  ? SizedBox(
+                      width: ButtonConstants.buttonWidth,
+                      child: Row(
+                        children: [
+                          appLib.createRichText(
+                            'Select Feeling Values',
+                            textColor: Colors.red,
+                            fontSize: 10,
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox
+                      .shrink(); // Hide the widget if conditions are not met
+            },
+          ),
           appLib.createFunctionButton(_continueText, context, handleButton),
         ]));
   }
@@ -515,6 +651,8 @@ class PriceRangePageState extends State<PriceRangePage> {
   double max_price = 0;
 
   String selectedPriceRange = "\$0 - \$0";
+
+  ValueNotifier<bool> pressedNotifier = ValueNotifier<bool>(false);
 
   void onTap(index) {
     setState(() {
@@ -557,10 +695,13 @@ class PriceRangePageState extends State<PriceRangePage> {
       print('price button handled');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => QuestionPage()),
+        //MaterialPageRoute(builder: (context) => QuestionPage()),
+        MaterialPageRoute(builder: (context) => EditedQuestionPage()),
       );
       print('navigated to questions page');
     } else {
+      pressedNotifier.value = true;
+
       print('Select values');
     }
   }
@@ -627,6 +768,26 @@ class PriceRangePageState extends State<PriceRangePage> {
           });
         }),
         SizedBox(height: 30),
+        ValueListenableBuilder<bool>(
+          valueListenable: pressedNotifier,
+          builder: (context, isPressed, child) {
+            return isPressed && (selectedPriceRange == "\$0 - \$0")
+                ? SizedBox(
+                    width: ButtonConstants.buttonWidth,
+                    child: Row(
+                      children: [
+                        appLib.createRichText(
+                          'Select Price Values',
+                          textColor: Colors.red,
+                          fontSize: 10,
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox
+                    .shrink(); // Hide the widget if conditions are not met
+          },
+        ),
         appLib.createFunctionButton('Apply', context, handleButton)
       ]),
     );
@@ -667,33 +828,22 @@ class QuestionPageState extends State<QuestionPage> {
   }
 
   Widget insertLikedState(bool liked) {
-    if (liked) {
-      return Center(
-        child: SizedBox(
-          height: 300,
-          child: Image.asset(
-            "/Users/admin/Desktop/Development/wonder_wrap/images/Liked.png",
-            fit: BoxFit.cover,
-          ),
+    return Center(
+      child: SizedBox(
+        height: 300,
+        child: Image.asset(
+          liked ? "images/Liked.png" : "images/unLiked.png",
+          fit: BoxFit.cover,
         ),
-      );
-    } else {
-      return Center(
-        child: SizedBox(
-          height: 300,
-          child: Image.asset(
-            "/Users/admin/Desktop/Development/wonder_wrap/images/unLiked.png",
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 
   dynamic handleSwipe(bool like) {
     setState(() {
       String questionId = questionsList[stackIndex]['id'].toString();
       String answer = like ? 'yes' : 'no';
+      liked = like;
       answersList.add({'question_id': questionId, 'value': answer});
 
       if (like) {
@@ -747,8 +897,12 @@ class QuestionPageState extends State<QuestionPage> {
                   });
                   handleSwipe(liked);
                 },
+                //onSwipe:(){},
                 child: Card(
                   elevation: 5,
+                  shadowColor: Colors.transparent,
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -842,8 +996,6 @@ class QuestionPageState extends State<QuestionPage> {
                                       SliderConstants.sliderActiveColor)),
                             ]),
                           ),
-
-                          ///IndexedStack(
                           LazyIndexedStack(
                             index: stackIndex,
                             children: [
@@ -1014,6 +1166,7 @@ class GiftsPageState extends State<GiftsPage> {
                                       },
                                       child: Card(
                                         elevation: 5,
+                                        shadowColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(30),
@@ -1054,6 +1207,11 @@ class GiftsPageState extends State<GiftsPage> {
                           height: 10,
                         ),
                         Expanded(child: SizedBox()),
+                        appLib.createButton(
+                            'Refer a friend', ReferralPage(), context),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1117,15 +1275,22 @@ class MyGiftsPageState extends State<MyGiftsPage> {
   List<String> giftUrls = [];
   List<String> giftImages = [];
   List<int> giftsListLength = [];
-  final _pageController = PageController(
-    initialPage: 0,
-  );
+  List<PageController> _pageControllers = [];
+
   late final Future myFuture;
 
   @override
   void initState() {
     super.initState();
     myFuture = fetchMyGifts();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _pageControllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   Future<void> fetchMyGifts() async {
@@ -1142,7 +1307,6 @@ class MyGiftsPageState extends State<MyGiftsPage> {
       giftsCreated = dic['giftsCreated'];
       giftImages = dic['giftImages'];
     });
-    print(giftsCreated);
   }
 
   dynamic tideNamesUrls(var MyGiftsList) {
@@ -1192,6 +1356,10 @@ class MyGiftsPageState extends State<MyGiftsPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
+                _pageControllers = List.generate(
+                  giftsListLength.length,
+                  (index) => PageController(initialPage: 0),
+                );
                 return Column(
                   children: [
                     SizedBox(
@@ -1237,100 +1405,77 @@ class MyGiftsPageState extends State<MyGiftsPage> {
                                 height: 275,
                                 child: Column(children: [
                                   SizedBox(
-                                    width: 250,
-                                    height: 250,
-                                    child: PageView.builder(
-                                        controller: _pageController,
-                                        itemCount: giftListLength,
-                                        itemBuilder: (context, indexPage) {
-                                          final giftUrl =
-                                              giftUrls[index * 4 + indexPage];
-                                          final giftImage =
-                                              giftImages[index * 4 + indexPage];
+                                      width: 250,
+                                      height: 250,
+                                      child: PageView.builder(
+                                          controller: _pageControllers[index],
+                                          itemCount: giftListLength,
+                                          itemBuilder: (context, indexPage) {
+                                            final giftUrl =
+                                                giftUrls[index * 4 + indexPage];
+                                            final giftImage = giftImages[
+                                                index * 4 + indexPage];
 
-                                          return GestureDetector(
-                                              onTap: () async {
-                                                if (await canLaunchUrl(
-                                                    Uri.parse(giftUrl))) {
-                                                  await launchUrl(
-                                                      Uri.parse(giftUrl));
-                                                } else {
-                                                  int en =
-                                                      index * 4 + indexPage;
-                                                  print(
-                                                      'Could not launch gift $en');
-                                                }
-                                              },
-                                              child: Card(
-                                                elevation: 5,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                ),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: giftImage,
-                                                  imageBuilder: (context,
-                                                          imageProvider) =>
-                                                      Container(
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: imageProvider,
+                                            return GestureDetector(
+                                                onTap: () async {
+                                                  if (await canLaunchUrl(
+                                                      Uri.parse(giftUrl))) {
+                                                    await launchUrl(
+                                                        Uri.parse(giftUrl));
+                                                  } else {
+                                                    int en =
+                                                        index * 4 + indexPage;
+                                                    print(
+                                                        'Could not launch gift $en');
+                                                  }
+                                                },
+                                                child: Card(
+                                                  elevation: 5,
+                                                  shadowColor:
+                                                      Colors.transparent,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                  ),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: giftImage,
+                                                    imageBuilder: (context,
+                                                            imageProvider) =>
+                                                        Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: imageProvider,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  placeholder: (context, url) =>
-                                                      Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      color: ButtonConstants
-                                                          .primaryButtonColor,
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        color: ButtonConstants
+                                                            .primaryButtonColor,
+                                                      ),
                                                     ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Icon(Icons.error),
                                                   ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Icon(Icons.error),
-                                                ),
-                                              ));
-                                        }),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
+                                                ));
+                                          })),
                                   SmoothPageIndicator(
-                                      controller: _pageController,
+                                      controller: _pageControllers[index],
                                       count: giftListLength,
                                       effect: WormEffect(
                                           activeDotColor: ButtonConstants
                                               .primaryButtonColor),
-                                      onDotClicked: (pageIndex) {}),
+                                      onDotClicked: (indexPage) {}),
                                 ]),
                               ),
                               SizedBox(
                                 height: 5,
                               ),
-                              /*Card(
-                              child: ListTile(x
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: ButtonConstants.primaryButtonColor,
-                                      width: 1),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                leading: CircleAvatar(
-                                  backgroundColor:
-                                      ButtonConstants.primaryButtonColor,
-                                ),
-                                title: appLib.createRichText(giftName,
-                                    fontFamily: 'cabin', bold: true),
-                                onTap: () async {
-                                  if (await canLaunchUrl(Uri.parse(giftUrl))) {
-                                    await launchUrl(Uri.parse(giftUrl));
-                                  } else {
-                                    print('Could not launch gift $index');
-                                  }
-                                },
-                              ),
-                            ),*/
                             ]),
                           );
                         },
@@ -1340,6 +1485,112 @@ class MyGiftsPageState extends State<MyGiftsPage> {
                 );
               }
             }));
+  }
+}
+
+class ReferralPage extends StatefulWidget {
+  @override
+  ReferralPageState createState() => ReferralPageState();
+}
+
+class ReferralPageState extends State<ReferralPage> {
+  String token = TokenManager().token;
+  double entry_id = EntryManager().entryid;
+  final String referralCode = 'http/:www.giftapp.com/alkdjflak';
+
+  Future<void> shareLink(Map data) async {
+    try {
+      await html.window.navigator.share(data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return appLib.createPage(
+        context,
+        appLib.createColumn([
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: 175,
+            child: appLib.insertPhoto(),
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Text(
+            'Refer your\nfriends',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 40,
+              color: Colors.black,
+              fontFamily: 'Roboto',
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    height: ButtonConstants.buttonHeight,
+                    width: ButtonConstants.buttonWidth,
+                    decoration: BoxDecoration(
+                      color: ButtonConstants.primaryButtonColor,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(children: [
+                      Text(
+                        referralCode,
+                        //referralCode.length > 10 ? referralCode.substring(0, 10): referralCode, //referralCode.substring(referralCode.length),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      Expanded(
+                        child: SizedBox(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 6, 0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            var data = {
+                              'title': 'Referral Code',
+                              'Text': 'Your Referral Code',
+                              'url': referralCode,
+                            };
+                            shareLink(data);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(12.0),
+                            decoration: BoxDecoration(
+                              color: ButtonConstants.primaryButtonColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.share,
+                                color: ButtonConstants.secondaryButtonColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+            ),
+          ),
+          appLib.createButton('Back', GiftsPage(), context),
+        ]));
   }
 }
 
@@ -1380,5 +1631,245 @@ class TestPageState extends State<TestPage> {
         ),
       ]),
     );
+  }
+}
+
+//-----------------------------------------------------------------------------
+class EditedQuestionPage extends StatefulWidget {
+  const EditedQuestionPage({Key? key}) : super(key: key);
+
+  @override
+  EditedQuestionPageState createState() => EditedQuestionPageState();
+}
+
+class EditedQuestionPageState extends State<EditedQuestionPage> {
+  int stackIndex = 0;
+  int n_questions = 15;
+  String liked = '';
+
+  String token = TokenManager().token;
+  double entry_id = EntryManager().entryid;
+  Map<String, String> getQuestionsDic = {};
+  late final Future myFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    myFuture = fetchQuestions();
+  }
+
+  Future<void> fetchQuestions() async {
+    print('question request started');
+    var fetchedQuestionsList =
+        await appReq.getQuestions(token, entry_id, n_questions);
+    setState(() {
+      questionsList = fetchedQuestionsList;
+    });
+    print('questions saved');
+  }
+
+  Widget insertLikedState(bool liked) {
+    return Center(
+      child: SizedBox(
+        height: 300,
+        child: Image.asset(
+          liked ? "images/Liked.png" : "images/unLiked.png",
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+void handleSwipeEnd(SwiperActivity activity) {
+    setState(() {
+      if (activity.direction == AxisDirection.right) {
+        liked = 'true';
+      } else if (activity.direction == AxisDirection.left) {
+        liked = 'false';
+      } else if (activity.direction == AxisDirection.up) {
+        liked = 'null';
+      }
+    });
+  }
+  dynamic handleSwipe(bool like) {
+    setState(() {
+      String questionId = questionsList[stackIndex]['id'].toString();
+      String answer = like ? 'yes' : 'no';
+      liked = like;
+      answersList.add({'question_id': questionId, 'value': answer});
+
+      if (like) {
+        //print("Liked!");
+        getQuestionsDic[questionsList[stackIndex]['id'].toString()] = 'yes';
+      } else {
+        //print("Disliked!");
+        getQuestionsDic[questionsList[stackIndex]['id'].toString()] = 'no';
+      }
+
+      if (stackIndex < n_questions - 1) {
+        stackIndex++;
+      } else {
+        setState(() {
+          answersList = answersList;
+        });
+        print('answers saved');
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GiftsPage()),
+        );
+        print('navigated to gifts page');
+      }
+    });
+    //print('swipeHandeled');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return appLib.createPage(
+        context,
+        Center(
+            child: FutureBuilder<void>(
+                future: myFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(
+                      width: 200,
+                      child: Center(
+                        child: appLib.insertPhoto(
+                            path:
+                                "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 230,
+                            height: 20,
+                            child: Column(children: [
+                              LinearProgressIndicator(
+                                  value: (stackIndex + 1) / n_questions,
+                                  backgroundColor: Colors.deepOrange[50],
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      SliderConstants.sliderActiveColor)),
+                            ]),
+                          ),
+                          SizedBox(
+                            height: 600,
+                            width: 300,
+                            child: AppinioSwiper(
+                              cardCount: questionsList.length,
+                              backgroundCardScale: 0.75,
+                              swipeOptions: SwipeOptions.only(
+                                  up: true,
+                                  down: false,
+                                  left: true,
+                                  right: true),
+                                  onSwipeEnd: handleSwipeEnd,
+                              cardBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  alignment: Alignment.center,
+                                  child: Card(
+                                    elevation: 5,
+                                    shadowColor: ButtonConstants
+                                        .primaryButtonColor, //Colors.transparent,
+                                    semanticContainer: true,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Container(
+                                        child: Center(
+                                      child: CachedNetworkImage(
+                                        imageUrl: questionsList[index]['image'],
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) {
+                                          if (index == 0) {
+                                            return Center(
+                                              child: appLib.createColumn(
+                                                [
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 150,
+                                                          child: appLib.insertPhoto(
+                                                              path:
+                                                                  '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
+                                                        ),
+                                                      ]),
+                                                  SizedBox(
+                                                    height: 70,
+                                                  ),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 150,
+                                                          child: appLib.insertPhoto(
+                                                              path:
+                                                                  '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
+                                                        ),
+                                                      ]),
+                                                ],
+                                              ),
+                                            );
+                                          } else {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: ButtonConstants
+                                                    .primaryButtonColor,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    )),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          /*LazyIndexedStack(
+                            index: stackIndex,
+                            children: [
+                              for (int i = 0; i < questionsList.length; i++)
+                                IgnorePointer(
+                                  ignoring: i != stackIndex,
+                                  child: Opacity(
+                                    opacity: i == stackIndex ? 1.0 : 0.0,
+                                    child: SizedBox(
+                                      width: 300,
+                                      height: 600,
+                                      child: createSwipingImageCard(
+                                        questionsList[i]['image'],
+                                        i,
+                                        handleSwipe,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          )*/
+                        ]);
+                  }
+                })));
   }
 }
