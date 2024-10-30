@@ -9,7 +9,7 @@ AppLib appLib = AppLib();
 class AppLib {
   Widget insertPhoto(
       {String path =
-          "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"}) {
+          "/Users/zaidaladarbi/Developer/wonder_wrap/images/logo.png"}) {
     return Image.asset(path, fit: BoxFit.cover);
   }
 

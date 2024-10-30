@@ -8,7 +8,7 @@ import 'package:swipe_widget/swipe_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'LazyIndexedStack.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:appinio_swiper/appinio_swiper.dart';
+//import 'package:appinio_swiper/appinio_swiper.dart';
 
 import 'AppRequestsLib.dart';
 import 'TokenManager.dart';
@@ -112,7 +112,7 @@ class StartingPageState extends State<StartingPage> {
               width: 250,
               child: appLib.insertPhoto(
                   path:
-                      '/Users/admin/Desktop/Development/wonder_wrap/images/Starting.png')),
+                      "/Users/zaidaladarbi/Developer/wonder_wrap/images/starting.png")),
           SizedBox(height: 70),
           createStartButton(_buttonText, context),
           //appLib.createButton(_buttonText, SignInPage(), context),
@@ -566,11 +566,12 @@ class EmotionFeelingPageState extends State<EmotionFeelingPage> {
     double entry_id = EntryManager().entryid;
 
     if (selectedFeeling != '') {
-      appReq.postRequest('/set_feeling/', token, {
+      /*appReq.postRequest('/set_feeling/', token, {
         'entry_id': entry_id,
         'feeling': selectedFeeling,
-      });
+      })
       print('Feeling button handled');
+      */
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PriceRangePage()),
@@ -696,7 +697,8 @@ class PriceRangePageState extends State<PriceRangePage> {
       Navigator.push(
         context,
         //MaterialPageRoute(builder: (context) => QuestionPage()),
-        MaterialPageRoute(builder: (context) => EditedQuestionPage()),
+        MaterialPageRoute(
+            builder: (context) => QuestionPage()), //EditedQuestionPage()),
       );
       print('navigated to questions page');
     } else {
@@ -824,6 +826,10 @@ class QuestionPageState extends State<QuestionPage> {
     setState(() {
       questionsList = fetchedQuestionsList;
     });
+
+    print('${questionsList.length}:question list');
+    print('${fetchedQuestionsList.length}:question list');
+
     print('questions saved');
   }
 
@@ -927,7 +933,7 @@ class QuestionPageState extends State<QuestionPage> {
                                       width: 150,
                                       child: appLib.insertPhoto(
                                           path:
-                                              '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
+                                              "/Users/zaidaladarbi/Developer/wonder_wrap/images/swipeRight.png"),
                                     ),
                                   ]),
                               SizedBox(
@@ -940,7 +946,7 @@ class QuestionPageState extends State<QuestionPage> {
                                       width: 150,
                                       child: appLib.insertPhoto(
                                           path:
-                                              '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
+                                              "/Users/zaidaladarbi/Developer/wonder_wrap/images/swipeLeft.png"),
                                     ),
                                   ]),
                             ],
@@ -975,7 +981,7 @@ class QuestionPageState extends State<QuestionPage> {
                       child: Center(
                         child: appLib.insertPhoto(
                             path:
-                                "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"),
+                                "/Users/zaidaladarbi/Developer/wonder_wrap/images/logo.png"),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -1102,7 +1108,7 @@ class GiftsPageState extends State<GiftsPage> {
                     child: Center(
                       child: appLib.insertPhoto(
                           path:
-                              "/Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png"),
+                              "/Users/zaidaladarbi/Developer/wonder_wrap/images/AiisChoosing.png"),
                     ),
                   );
                 } else if (snapshot.hasError) {
@@ -1128,7 +1134,7 @@ class GiftsPageState extends State<GiftsPage> {
                               width: 120,
                               child: appLib.insertPhoto(
                                   path:
-                                      '/Users/admin/Desktop/Development/wonder_wrap/images/LogoTheAIHasChosenYourGift.png'),
+                                      "/Users/zaidaladarbi/Developer/wonder_wrap/images/LogoTheAIHasChosenYourGift.png"),
                             ),
                             SizedBox(
                               height: 15,
@@ -1137,7 +1143,7 @@ class GiftsPageState extends State<GiftsPage> {
                               width: 275,
                               child: appLib.insertPhoto(
                                   path:
-                                      '/Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png'),
+                                      "/Users/zaidaladarbi/Developer/wonder_wrap/images/TextTheAIHasChosenYourGift.png"),
                             ),
                             SizedBox(
                               height: 25,
@@ -1635,7 +1641,7 @@ class TestPageState extends State<TestPage> {
 }
 
 //-----------------------------------------------------------------------------
-class EditedQuestionPage extends StatefulWidget {
+/*class EditedQuestionPage extends StatefulWidget {
   const EditedQuestionPage({Key? key}) : super(key: key);
 
   @override
@@ -1665,6 +1671,7 @@ class EditedQuestionPageState extends State<EditedQuestionPage> {
     setState(() {
       questionsList = fetchedQuestionsList;
     });
+
     print('questions saved');
   }
 
@@ -1679,7 +1686,8 @@ class EditedQuestionPageState extends State<EditedQuestionPage> {
       ),
     );
   }
-void handleSwipeEnd(SwiperActivity activity) {
+
+  void handleSwipeEnd(SwiperActivity activity) {
     setState(() {
       if (activity.direction == AxisDirection.right) {
         liked = 'true';
@@ -1690,11 +1698,12 @@ void handleSwipeEnd(SwiperActivity activity) {
       }
     });
   }
+
   dynamic handleSwipe(bool like) {
     setState(() {
       String questionId = questionsList[stackIndex]['id'].toString();
       String answer = like ? 'yes' : 'no';
-      liked = like;
+      //liked = like;
       answersList.add({'question_id': questionId, 'value': answer});
 
       if (like) {
@@ -1707,7 +1716,10 @@ void handleSwipeEnd(SwiperActivity activity) {
 
       if (stackIndex < n_questions - 1) {
         stackIndex++;
+        print('stackIndex: $stackIndex');
       } else {
+        print('estackIndex: $stackIndex');
+
         setState(() {
           answersList = answersList;
         });
@@ -1737,7 +1749,7 @@ void handleSwipeEnd(SwiperActivity activity) {
                       child: Center(
                         child: appLib.insertPhoto(
                             path:
-                                "/Users/admin/Desktop/Development/wonder_wrap/images/logo.png"),
+                                "/Users/zaidaladarbi/Developer/wonder_wrap/images/logo.png"),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -1769,7 +1781,7 @@ void handleSwipeEnd(SwiperActivity activity) {
                                   down: false,
                                   left: true,
                                   right: true),
-                                  onSwipeEnd: handleSwipeEnd,
+                              //onSwipeEnd:handleSwipeEnd,
                               cardBuilder: (BuildContext context, int index) {
                                 return Container(
                                   alignment: Alignment.center,
@@ -1808,7 +1820,7 @@ void handleSwipeEnd(SwiperActivity activity) {
                                                           width: 150,
                                                           child: appLib.insertPhoto(
                                                               path:
-                                                                  '/Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png'),
+                                                                  '/Users/zaidaladarbi/Developer/wonder_wrap/images/swipeRight.png'),
                                                         ),
                                                       ]),
                                                   SizedBox(
@@ -1823,7 +1835,7 @@ void handleSwipeEnd(SwiperActivity activity) {
                                                           width: 150,
                                                           child: appLib.insertPhoto(
                                                               path:
-                                                                  '/Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png'),
+                                                                  '/Users/zaidaladarbi/Developer/wonder_wrap/images/swipeLeft.png'),
                                                         ),
                                                       ]),
                                                 ],
@@ -1872,4 +1884,4 @@ void handleSwipeEnd(SwiperActivity activity) {
                   }
                 })));
   }
-}
+}*/

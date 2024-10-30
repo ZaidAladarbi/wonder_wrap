@@ -1,11 +1,11 @@
 name: wonder_wrap
 description: App that chooses your gift using AI.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: ">=3.0.6 <4.0.0"
 
 dependencies:
   cached_network_image: ^3.2.3
@@ -30,11 +30,11 @@ flutter:
   uses-material-design: true
 
   assets:
-    - /Users/admin/Desktop/Development/wonder_wrap/images/
-    - /Users/admin/Desktop/Development/wonder_wrap/images/logo.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/Starting.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/AiisChoosing.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/LogoTheAIHasChosenYourGift.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/TextTheAIHasChosenYourGift.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/swipeLeft.png
-    - /Users/admin/Desktop/Development/wonder_wrap/images/swipeRight.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/logo.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/Starting.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/AiisChoosing.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/LogoTheAIHasChosenYourGift.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/TextTheAIHasChosenYourGift.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/swipeLeft.png
+    - /Users/zaidaladarbi/Developer/wonder_wrap/images/swipeRight.png
